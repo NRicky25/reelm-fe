@@ -6,10 +6,9 @@
 import type { Episode, Season, Title } from "./types";
 
 const VIDEOS = [
-  "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", // HLS stream (Big Buck Bunny)
-  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
-  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+  "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", // HLS · Big Buck Bunny
+  "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8", // HLS · Tears of Steel
+  "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4", // MP4 · Sintel trailer
 ];
 const video = (i: number) => VIDEOS[i % VIDEOS.length];
 
