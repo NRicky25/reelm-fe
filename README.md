@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Reelm: Frontend
 
-## Getting Started
+Streaming site frontend for anime, movies and series. Built with Next.js 15, TypeScript, Tailwind CSS v4 and Lucide icons.
 
-First, run the development server:
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm run build      # production build + type check + lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Pages
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Route | What it is |
+|---|---|
+| `/` | Home: hero, Continue Watching, New Episodes, Recently Added, Staff Picks, genre rows |
+| `/title/[slug]` | Title detail: Play/Continue, My List, episodes, More Like This, details |
+| `/watch/[slug]?ep=<id>` | Video player (HLS + MP4) |
+| `/browse/[anime\|movies\|series]?genre=&list=` | Browse grid (opened from the header dropdowns) |
+| `/browse` | Browse menu for phones |
+| `/search?q=` | Live search |
+| `/my-list` | Saved titles |
+| `/login`, `/signup`, `/profiles`, `/settings` | **Demo only**, no real auth |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Where things live
 
-## Learn More
+```
+src/
+├── app/                 routes ((main) = pages with header, (auth) = login/profiles)
+├── components/          layout, cards, home, title, player, ui
+├── data/
+│   ├── types.ts         data shapes the backend should return
+│   └── titles.ts        FAKE catalogue (all titles are made up)
+└── lib/
+    ├── api.ts           ← the only place pages get catalogue data from
+    └── user-data.ts     My List, watch progress, profile, player prefs (localStorage for now)
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Connecting a backend later
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Keep the shapes in `src/data/types.ts`.
+2. Replace the function bodies in `src/lib/api.ts` with `fetch()` calls to your API. The pages don't need to change.
+3. Replace the localStorage stores in `src/lib/user-data.ts` with API calls (My List, progress, profile).
+4. Put real video stream URLs (from Bunny Stream, Mux, Cloudflare Stream, etc.) in `videoUrl`. The player handles `.m3u8` (HLS) and `.mp4`.
+5. Add `posterUrl` / `backdropUrl` to titles. Real images replace the gradient placeholders automatically (add the image host to `images.remotePatterns` in `next.config.ts`).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Sample videos are openly licensed Blender Foundation films served from public test streams.
