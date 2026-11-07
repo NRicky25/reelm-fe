@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { Avatar } from "@/components/layout/header";
 import { setPlayerPrefs, usePlayerPrefs, useProfile } from "@/lib/user-data";
 
-/** DEMO settings. Playback options are real (they change the player); account bits are placeholders. */
+/** Settings saved on this device. Account settings come back once login is added. */
 export default function SettingsPage() {
   const prefs = usePlayerPrefs();
   const { profile } = useProfile();
@@ -18,7 +18,7 @@ export default function SettingsPage() {
           <Avatar name={profile.name} color={profile.color} size={48} />
           <div>
             <p className="font-semibold">{profile.name}</p>
-            <p className="text-xs text-muted">demo@reelm.app</p>
+            <p className="text-xs text-muted">No account needed</p>
           </div>
           <Link href="/profiles" className="ml-auto rounded-full border border-line px-4 py-2 text-xs font-medium text-soft hover:bg-surface">
             Switch profile
@@ -48,18 +48,8 @@ export default function SettingsPage() {
         />
       </Section>
 
-      <Section title="Account">
-        <Row label="Email" value="demo@reelm.app" />
-        <Row label="Plan" value="Demo" />
-        <Row label="Password" value="••••••••" />
-        <div className="p-4">
-          <Link href="/login" className="text-sm font-semibold text-mauve hover:text-lavender">
-            Sign out
-          </Link>
-        </div>
-      </Section>
 
-      <p className="mt-6 text-center text-xs text-subtle">Demo build: account details are placeholders until the backend is connected.</p>
+      <p className="mt-6 text-center text-xs text-subtle">Settings are saved on this device.</p>
     </div>
   );
 }
@@ -70,15 +60,6 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <h2 className="mb-2 px-1 text-xs font-semibold tracking-[0.15em] text-subtle">{title.toUpperCase()}</h2>
       <div className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-elevated">{children}</div>
     </section>
-  );
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4 p-4 text-sm">
-      <span className="text-soft">{label}</span>
-      <span className="text-muted">{value}</span>
-    </div>
   );
 }
 

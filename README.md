@@ -21,7 +21,8 @@ npm run build      # production build + type check + lint
 | `/browse` | Browse menu for phones |
 | `/search?q=` | Live search |
 | `/my-list` | Saved titles |
-| `/login`, `/signup`, `/profiles`, `/settings` | **Demo only**, no real auth |
+| `/profiles`, `/settings` | Profile picker + playback settings (saved on this device) |
+| `/login`, `/signup` | **Not linked anywhere yet.** The site is open to everyone with no login. Kept for when accounts are added. |
 
 ## Where things live
 

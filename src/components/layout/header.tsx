@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Bell, LogOut, Search, Settings, Users } from "lucide-react";
+import { Bell, Search, Settings, Users } from "lucide-react";
 import { Logo } from "./logo";
 import { CategoryMenu } from "./category-menu";
 import { usePopover } from "@/components/ui/use-popover";
@@ -141,7 +141,7 @@ function ProfileMenu() {
             <Avatar name={profile.name} color={profile.color} size={36} />
             <div>
               <p className="text-sm font-semibold">{profile.name}</p>
-              <p className="text-xs text-muted">Demo account</p>
+              <p className="text-xs text-muted">Watching now</p>
             </div>
           </div>
           <div className="my-1 h-px bg-line" />
@@ -150,9 +150,6 @@ function ProfileMenu() {
           </MenuItem>
           <MenuItem href="/settings" icon={<Settings size={16} />} onClick={pop.hide}>
             Settings
-          </MenuItem>
-          <MenuItem href="/login" icon={<LogOut size={16} />} onClick={pop.hide}>
-            Sign out
           </MenuItem>
         </div>
       )}
