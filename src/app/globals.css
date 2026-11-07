@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+/* ───────── Reelm design tokens ───────── */
+@theme {
+  --color-bg: #1c1d21;          /* page background: soft charcoal */
+  --color-elevated: #24252b;    /* menus, popovers */
+  --color-surface: #2a2b31;     /* cards, inputs, chips */
+  --color-surface-hover: #33343b;
+  --color-line: #34353d;        /* borders, dividers */
+  --color-fg: #e6e6e9;          /* main text */
+  --color-soft: #cfd0d6;        /* secondary text */
+  --color-muted: #9a9ba3;       /* meta text */
+  --color-subtle: #6f707a;      /* placeholders */
+  --color-lavender: #a99cf0;
+  --color-mauve: #c9a0b8;
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-logo: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Brand gradient helpers */
+@utility bg-brand {
+  background-image: linear-gradient(90deg, var(--color-lavender), var(--color-mauve));
+}
+@utility text-brand {
+  background-image: linear-gradient(90deg, var(--color-lavender), var(--color-mauve));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+html {
+  color-scheme: dark;
+  background: var(--color-bg);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-lavender) 40%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-lavender);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes heroIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
