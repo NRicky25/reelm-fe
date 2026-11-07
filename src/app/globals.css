@@ -20,6 +20,33 @@
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Layout: one shared side gutter + header height so everything lines up */
+:root {
+  --gutter: clamp(16px, 3.6vw, 64px);
+  --header-h: 60px;
+}
+@media (min-width: 768px) {
+  :root {
+    --header-h: 72px;
+  }
+}
+@utility px-gutter {
+  padding-inline: var(--gutter);
+}
+@utility scroll-px-gutter {
+  scroll-padding-inline: var(--gutter);
+}
+@utility inset-x-gutter {
+  left: var(--gutter);
+  right: var(--gutter);
+}
+@utility right-gutter {
+  right: var(--gutter);
+}
+@utility h-header {
+  height: var(--header-h);
+}
+
 /* Brand gradient helpers */
 @utility bg-brand {
   background-image: linear-gradient(90deg, var(--color-lavender), var(--color-mauve));

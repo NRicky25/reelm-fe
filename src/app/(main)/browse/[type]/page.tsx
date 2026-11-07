@@ -26,7 +26,7 @@ export default async function BrowsePage({ params, searchParams }: Props) {
   const label = BROWSE_TYPES[type].label;
 
   return (
-    <div className="px-4 pt-24 sm:px-7 sm:pt-28">
+    <div className="px-gutter pt-24 sm:pt-28">
       <header className="mb-7">
         <p className="text-xs font-medium text-muted">{label}</p>
         <h1 className="mt-1 text-3xl font-extrabold tracking-tight sm:text-4xl">{heading}</h1>

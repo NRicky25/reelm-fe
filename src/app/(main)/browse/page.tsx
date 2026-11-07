@@ -7,7 +7,7 @@ export const metadata = { title: "Browse" };
 /** Phone-friendly browse menu (the header dropdowns cover this on desktop). */
 export default function BrowseIndex() {
   return (
-    <div className="px-4 pt-24 sm:px-7">
+    <div className="px-gutter pt-24">
       <h1 className="text-3xl font-extrabold tracking-tight">Browse</h1>
       <div className="mt-6 space-y-8">
         {(Object.keys(BROWSE_TYPES) as BrowseKey[]).map((key) => {

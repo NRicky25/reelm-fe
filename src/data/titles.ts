@@ -4,6 +4,7 @@
 // Videos are free, openly licensed sample films (Blender Foundation).
 // ─────────────────────────────────────────────────────────────
 import type { Episode, Season, Title } from "./types";
+import { STILLS, TITLE_ART, episodeStill } from "./images";
 
 const VIDEOS = [
   "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", // HLS · Big Buck Bunny
@@ -70,7 +71,7 @@ function seasons(
 const ANIME_LANGS = { audioLanguages: ["Japanese", "English"], subtitleLanguages: ["English", "Español", "Bahasa Indonesia", "Français"] };
 const EN_LANGS = { audioLanguages: ["English"], subtitleLanguages: ["English", "Español", "Français"] };
 
-export const TITLES: Title[] = [
+const RAW_TITLES: Title[] = [
   // ───────────── ANIME ─────────────
   {
     id: "t01", slug: "echoes-of-the-starfall", type: "anime", name: "Echoes of the Starfall",
@@ -297,6 +298,24 @@ export const TITLES: Title[] = [
     seasons: seasons("flatmates", [{ released: 10, lastReleasedInDays: -500, minutes: 24 }, { released: 10, lastReleasedInDays: -260, minutes: 24 }], false),
   },
 ];
+
+/** Attach placeholder artwork (film stills) to every title and episode. */
+export const TITLES: Title[] = RAW_TITLES.map((t) => {
+  const name = TITLE_ART[t.slug];
+  if (!name) return t;
+  const still = STILLS[name];
+  let i = 0;
+  return {
+    ...t,
+    posterUrl: t.posterUrl ?? still.src,
+    backdropUrl: t.backdropUrl ?? still.src,
+    posterFocusX: t.posterFocusX ?? still.focusX,
+    seasons: t.seasons?.map((s) => ({
+      ...s,
+      episodes: s.episodes.map((e) => ({ ...e, thumbUrl: e.thumbUrl ?? episodeStill(name, i++).src })),
+    })),
+  };
+});
 
 /** Genres shown in each header dropdown card. */
 export const GENRES: Record<string, string[]> = {

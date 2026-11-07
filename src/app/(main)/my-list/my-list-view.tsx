@@ -21,7 +21,7 @@ export function MyListView({ titles }: { titles: Title[] }) {
     .sort((a, b) => (sort === "az" ? a.t.name.localeCompare(b.t.name) : b.entry.addedAt - a.entry.addedAt));
 
   return (
-    <div className="px-4 pt-24 sm:px-7 sm:pt-28">
+    <div className="px-gutter pt-24 sm:pt-28">
       <header className="mb-7 flex flex-wrap items-end gap-3">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">My List</h1>

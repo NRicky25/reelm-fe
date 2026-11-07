@@ -46,4 +46,6 @@ src/
 4. Put real video stream URLs (from Bunny Stream, Mux, Cloudflare Stream, etc.) in `videoUrl`. The player handles `.m3u8` (HLS) and `.mp4`.
 5. Add `posterUrl` / `backdropUrl` to titles. Real images replace the gradient placeholders automatically (add the image host to `images.remotePatterns` in `next.config.ts`).
 
-Sample videos are openly licensed Blender Foundation films served from public test streams.
+## Placeholder artwork & sample videos
+
+Posters, backdrops and episode thumbnails are stills from Blender Foundation open movies (Big Buck Bunny, Cosmos Laundromat, Spring, Tears of Steel), saved in `public/images/stills/` and mapped to titles in `src/data/images.ts`. Sample videos are the same open movies, served from public test streams. Both are Creative Commons licensed; attribution is shown on `/credits` and in the site footer. **Keep the credits while you use them**, and remove both when you switch to real artwork.

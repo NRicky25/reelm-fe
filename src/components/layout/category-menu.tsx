@@ -39,7 +39,7 @@ export function CategoryMenu({ browseKey }: { browseKey: BrowseKey }) {
         aria-expanded={pop.open}
         aria-controls={menuId}
         onClick={pop.toggle}
-        className={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm transition-colors duration-150 ${
+        className={`flex items-center gap-1 rounded-lg px-3.5 py-2 text-[15px] font-medium transition-colors duration-150 ${
           pop.open ? "bg-surface text-fg" : active ? "text-fg" : "text-muted hover:text-fg"
         }`}
       >

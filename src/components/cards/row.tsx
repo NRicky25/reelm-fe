@@ -42,7 +42,7 @@ export function Row({
 
   return (
     <section className="group/row mt-9 first:mt-0">
-      <div className="mb-3 flex items-baseline gap-3 px-4 sm:px-7">
+      <div className="mb-3 flex items-baseline gap-3 px-gutter">
         <h2 className="text-base font-bold sm:text-lg">{heading}</h2>
         {sub && <span className="text-xs text-muted">{sub}</span>}
         {seeAll && (
@@ -56,7 +56,7 @@ export function Row({
         <div
           ref={scroller}
           onScroll={update}
-          className="scrollbar-none flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto overscroll-x-contain px-4 pb-2 pt-1 sm:scroll-px-7 sm:gap-4 sm:px-7"
+          className="scrollbar-none flex snap-x snap-mandatory scroll-px-gutter gap-3 overflow-x-auto overscroll-x-contain px-gutter pb-2 pt-1 sm:gap-4"
         >
           {children.map((child, i) => (
             <div key={i} className={`shrink-0 snap-start ${itemWidth}`}>

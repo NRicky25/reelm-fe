@@ -23,15 +23,26 @@ export function Header() {
   const solid = !overHero || scrolled;
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-40 transition-[background-color,border-color,backdrop-filter] duration-300 ${
-        solid ? "border-b border-line bg-bg/95 backdrop-blur-md" : "border-b border-transparent bg-gradient-to-b from-bg/90 to-transparent"
-      }`}
-    >
-      <div className="mx-auto flex h-16 max-w-[1800px] items-center gap-2 px-4 sm:px-7">
-        <Logo className="mr-4" />
+    <header className="fixed inset-x-0 top-0 z-40">
+      {/* Over a hero: a tall, soft fade with no hard edge (keeps the menu readable). */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-x-0 top-0 h-[180px] bg-[linear-gradient(180deg,rgba(28,29,33,0.85)_0%,rgba(28,29,33,0.45)_45%,rgba(28,29,33,0)_100%)] transition-opacity duration-300 ${
+          solid ? "opacity-0" : "opacity-100"
+        }`}
+      />
+      {/* Solid bar: fades in. Its divider only shows once the page is scrolled. */}
+      <div
+        aria-hidden
+        className={`absolute inset-0 bg-bg/92 backdrop-blur-md transition-[opacity,box-shadow] duration-300 ${solid ? "opacity-100" : "opacity-0"} ${
+          scrolled ? "shadow-[0_1px_0_rgba(255,255,255,0.06),0_8px_24px_rgba(0,0,0,0.25)]" : ""
+        }`}
+      />
 
-        <nav className="hidden items-center gap-0.5 md:flex" aria-label="Main">
+      <div className="relative flex h-header items-center gap-2 px-gutter">
+        <Logo className="mr-3 text-[26px] md:mr-6 md:text-[28px]" />
+
+        <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
           <NavLink href="/" active={pathname === "/"}>
             Home
           </NavLink>
@@ -43,18 +54,18 @@ export function Header() {
           </NavLink>
         </nav>
 
-        <div className="ml-auto flex items-center gap-2 sm:gap-3">
+        <div className="ml-auto flex items-center gap-1.5 sm:gap-2.5">
           {pathname !== "/search" && (
             <Link
               href="/search"
-              className="hidden h-9 w-52 items-center gap-2 rounded-full bg-surface/80 px-3.5 text-[13px] text-subtle transition-colors hover:bg-surface-hover hover:text-muted lg:flex"
+              className="hidden h-10 w-64 items-center gap-2.5 rounded-full bg-surface/80 px-4 text-sm text-subtle transition-colors hover:bg-surface-hover hover:text-muted xl:flex"
             >
-              <Search size={15} strokeWidth={2} />
+              <Search size={17} strokeWidth={2} />
               Search titles, genres…
             </Link>
           )}
-          <Link href="/search" aria-label="Search" className="grid size-9 place-items-center rounded-full text-soft hover:bg-surface lg:hidden">
-            <Search size={19} strokeWidth={1.9} />
+          <Link href="/search" aria-label="Search" className="grid size-10 place-items-center rounded-full text-soft hover:bg-surface xl:hidden">
+            <Search size={21} strokeWidth={1.9} />
           </Link>
           <NotificationsMenu />
           <ProfileMenu />
@@ -69,10 +80,10 @@ function NavLink({ href, active, children }: { href: string; active: boolean; ch
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`relative rounded-lg px-3 py-2 text-sm transition-colors duration-150 ${active ? "text-fg" : "text-muted hover:text-fg"}`}
+      className={`relative rounded-lg px-3.5 py-2 text-[15px] font-medium transition-colors duration-150 ${active ? "text-fg" : "text-muted hover:text-fg"}`}
     >
       {children}
-      {active && <span className="bg-brand absolute inset-x-3 -bottom-[3px] h-0.5 rounded-full" />}
+      {active && <span className="bg-brand absolute inset-x-3.5 -bottom-1 h-0.5 rounded-full" />}
     </Link>
   );
 }
@@ -93,10 +104,10 @@ function NotificationsMenu() {
         aria-label="Notifications"
         aria-expanded={pop.open}
         onClick={pop.toggle}
-        className={`relative grid size-9 place-items-center rounded-full text-soft transition-colors hover:bg-surface ${pop.open ? "bg-surface" : ""}`}
+        className={`relative grid size-10 place-items-center rounded-full text-soft transition-colors hover:bg-surface ${pop.open ? "bg-surface" : ""}`}
       >
-        <Bell size={19} strokeWidth={1.9} />
-        <span className="absolute right-2 top-2 size-2 rounded-full bg-mauve ring-2 ring-bg" />
+        <Bell size={21} strokeWidth={1.9} />
+        <span className="absolute right-2.5 top-2.5 size-2 rounded-full bg-mauve ring-2 ring-bg" />
       </button>
       {pop.open && (
         <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-line bg-elevated shadow-[0_18px_40px_rgba(0,0,0,0.55)]">
@@ -132,8 +143,8 @@ function ProfileMenu() {
   const { profile } = useProfile();
   return (
     <div ref={pop.ref} className="relative">
-      <button type="button" aria-label="Account menu" aria-expanded={pop.open} onClick={pop.toggle} className="rounded-full">
-        <Avatar name={profile.name} color={profile.color} />
+      <button type="button" aria-label="Account menu" aria-expanded={pop.open} onClick={pop.toggle} className="ml-1 rounded-full">
+        <Avatar name={profile.name} color={profile.color} size={36} />
       </button>
       {pop.open && (
         <div className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-line bg-elevated p-1.5 shadow-[0_18px_40px_rgba(0,0,0,0.55)]">

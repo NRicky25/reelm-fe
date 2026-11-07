@@ -36,7 +36,7 @@ export default async function TitlePage({ params }: Props) {
         <div className="absolute inset-0 bg-gradient-to-r from-bg via-bg/75 to-bg/10" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/20 to-transparent" />
 
-        <div className="relative flex flex-col gap-7 px-4 pb-12 pt-16 sm:flex-row sm:items-end sm:px-7 sm:pt-28">
+        <div className="relative flex flex-col gap-7 px-gutter pb-12 pt-16 sm:flex-row sm:items-end sm:pt-28">
           <Artwork
             title={title}
             variant="poster"

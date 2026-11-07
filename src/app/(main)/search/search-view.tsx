@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Clock, Search, X } from "lucide-react";
 import type { Title, TitleType } from "@/data/types";
@@ -19,7 +19,6 @@ const TABS: { id: TabId; label: string }[] = [
 ];
 
 export function SearchView() {
-  const router = useRouter();
   const params = useSearchParams();
   const [query, setQuery] = useState(params.get("q") ?? "");
   const [tab, setTab] = useState<TabId>("all");
@@ -30,26 +29,31 @@ export function SearchView() {
   useEffect(() => input.current?.focus(), []);
 
   // Live results, and keep ?q= in the URL (debounced) so back/share works.
+  // Uses history.replaceState, NOT router.replace: router.replace is a full
+  // Next.js navigation (server round-trip + transition) and a pending one
+  // blocks / overrides other navigations, e.g. clicking the logo to go Home.
   useEffect(() => {
     const q = query.trim();
     let alive = true;
     search(q).then((r) => alive && setResults(r));
     const id = setTimeout(() => {
-      router.replace(q ? `/search?q=${encodeURIComponent(q)}` : "/search", { scroll: false });
+      if (window.location.pathname !== "/search") return; // already navigating away
+      const next = q ? `/search?q=${encodeURIComponent(q)}` : "/search";
+      if (window.location.pathname + window.location.search !== next) window.history.replaceState(null, "", next);
       if (q.length >= 2) addRecentSearch(q);
     }, 600);
     return () => {
       alive = false;
       clearTimeout(id);
     };
-  }, [query, router]);
+  }, [query]);
 
   const count = (id: TabId) => (id === "all" ? results.length : results.filter((r) => r.type === id).length);
   const shown = tab === "all" ? results : results.filter((r) => r.type === tab);
   const q = query.trim();
 
   return (
-    <div className="px-4 pt-20 sm:px-7 sm:pt-24">
+    <div className="px-gutter pt-20 sm:pt-24">
       <div className="relative mx-auto max-w-3xl">
         <Search size={22} className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-muted" />
         <input

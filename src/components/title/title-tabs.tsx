@@ -19,7 +19,7 @@ export function TitleTabs({ title, moreLikeThis }: { title: Title; moreLikeThis:
   ];
 
   return (
-    <section className="px-4 sm:px-7">
+    <section className="px-gutter">
       <div role="tablist" aria-label="Title sections" className="flex gap-7 border-b border-line">
         {tabs.map((t) => (
           <button
@@ -121,7 +121,7 @@ function Episodes({ title }: { title: Title }) {
             >
               <div className="relative overflow-hidden rounded-lg ring-1 ring-white/5">
                 <Artwork
-                  title={{ ...title, name: ep.name, colors: title.colors }}
+                  title={{ ...title, name: ep.name, backdropUrl: ep.thumbUrl ?? title.backdropUrl }}
                   variant="landscape"
                   className="aspect-video transition-[filter] duration-200 group-hover:brightness-115"
                 />

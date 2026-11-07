@@ -11,6 +11,8 @@ export interface Episode {
   durationSec: number;
   /** ISO date. Episodes with a future date show as locked "coming soon". */
   releaseDate: string;
+  /** Episode thumbnail image. */
+  thumbUrl?: string;
   introStartSec?: number;
   introEndSec?: number;
   videoUrl: string;
@@ -39,6 +41,8 @@ export interface Title {
   colors: [string, string];
   posterUrl?: string;
   backdropUrl?: string;
+  /** Horizontal focus (0–100) when the backdrop is cropped into a tall poster. */
+  posterFocusX?: number;
   featured?: boolean;
   staffPick?: boolean;
   /** ISO date the title was added to Reelm. */
