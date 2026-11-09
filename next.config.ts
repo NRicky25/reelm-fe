@@ -1,17 +1,23 @@
 import type { NextConfig } from "next";
+type RemotePatterns = NonNullable<NonNullable<NextConfig["images"]>["remotePatterns"]>;
 
-const nextConfig: NextConfig = {
-  images: {
-    // Artwork comes from Supabase Storage (public bucket). Only that path is
-    // allowed, so next/image can't be used to proxy arbitrary sites.
-    remotePatterns: [
+// Artwork comes from our own Supabase project's public `images` bucket.
+// Only that exact host + bucket is allowed, so nobody can use our image
+// optimizer to serve pictures from their own Supabase project.
+const supabaseUrl = process.env.IMAGES_SUPABASE_URL;
+
+const remotePatterns: RemotePatterns = supabaseUrl
+  ? [
       {
         protocol: "https",
-        hostname: "*.supabase.co",
-        pathname: "/storage/v1/object/public/**",
+        hostname: new URL(supabaseUrl).hostname,
+        pathname: "/storage/v1/object/public/images/**",
       },
-    ],
-  },
+    ]
+  : [];
+
+const nextConfig: NextConfig = {
+  images: { remotePatterns },
 };
 
 export default nextConfig;
