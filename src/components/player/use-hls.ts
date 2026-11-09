@@ -8,8 +8,8 @@ export interface QualityLevel {
 }
 
 /**
- * Attaches a video URL to a <video>. HLS (.m3u8) goes through hls.js unless the
- * browser plays it natively (Safari); MP4 etc. are set directly.
+ * Attaches a video URL to a <video>. HLS (.m3u8) goes through hls.js, or the
+ * browser's own HLS support where hls.js can't run (iPhone); MP4 etc. are set directly.
  */
 export function useHls(video: HTMLVideoElement | null, src: string, startAt: number) {
   const [hls, setHls] = useState<Hls | null>(null);
@@ -27,13 +27,23 @@ export function useHls(video: HTMLVideoElement | null, src: string, startAt: num
       if (startAt > 0 && Number.isFinite(video.duration) && startAt < video.duration - 5) video.currentTime = startAt;
     };
     video.addEventListener("loadedmetadata", seekToStart, { once: true });
+    const onNativeError = () => setError("Playback failed. Check your connection and try again.");
+
+    const playNatively = () => {
+      video.addEventListener("error", onNativeError);
+      video.src = src;
+    };
 
     const isHls = src.includes(".m3u8");
-    if (isHls && !video.canPlayType("application/vnd.apple.mpegurl")) {
+    if (isHls) {
+      // Prefer hls.js wherever it works: some browsers (e.g. recent Chrome) say
+      // they "maybe" play HLS natively but then fail. Native playback is the
+      // fallback for browsers without MediaSource, mainly Safari on iPhone.
       import("hls.js").then(({ default: HlsCtor }) => {
         if (cancelled) return;
         if (!HlsCtor.isSupported()) {
-          setError("This browser can't play this video.");
+          if (video.canPlayType("application/vnd.apple.mpegurl")) playNatively();
+          else setError("This browser can't play this video.");
           return;
         }
         instance = new HlsCtor({ capLevelToPlayerSize: true });
@@ -53,12 +63,13 @@ export function useHls(video: HTMLVideoElement | null, src: string, startAt: num
         setHls(instance);
       });
     } else {
-      video.src = src;
+      playNatively();
     }
 
     return () => {
       cancelled = true;
       video.removeEventListener("loadedmetadata", seekToStart);
+      video.removeEventListener("error", onNativeError);
       instance?.destroy();
       setHls(null);
     };
