@@ -106,7 +106,7 @@ function Episodes({ title }: { title: Title }) {
                 <div className="grid aspect-video place-items-center rounded-lg bg-surface text-xs text-muted">
                   <span className="flex items-center gap-1.5">
                     <Lock size={13} />
-                    {new Date(ep.releaseDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    {new Date(ep.releaseDate).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" })}
                   </span>
                 </div>
                 <p className="mt-2 text-[11px] text-muted">E{ep.number} · Coming soon</p>

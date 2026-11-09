@@ -3,7 +3,7 @@
 import { GENRES, TITLES } from "@/data/titles";
 import type { Playable, Title, TitleType } from "@/data/types";
 import type { DataSource } from "./api-types";
-import { BROWSE_TYPES, genreSlug, isNewEpisode, isReleased, latestEpisode, listHeading, type BrowseKey } from "./catalog-utils";
+import { BROWSE_TYPES, NEW_MOVIE_DAYS, genreSlug, isNewEpisode, isReleased, latestEpisode, listHeading, today, type BrowseKey } from "./catalog-utils";
 
 const byNewestAdded = (a: Title, b: Title) => b.addedAt.localeCompare(a.addedAt);
 const byName = (a: Title, b: Title) => a.name.localeCompare(b.name);
@@ -17,15 +17,19 @@ async function getNewEpisodes(type: TitleType = "anime", limit = 18) {
     .map((x) => x.t);
 }
 
+const isNewMovie = (t: Title) => (Date.parse(today()) - Date.parse(t.addedAt)) / 86_400_000 <= NEW_MOVIE_DAYS;
+
 export const localSource: DataSource = {
-  getTitles: async () => TITLES,
+  getTitlesBySlugs: async (slugs) => TITLES.filter((t) => slugs.includes(t.slug)),
   getTitle: async (slug) => TITLES.find((t) => t.slug === slug),
   getFeatured: async () => TITLES.filter((t) => t.featured),
   getStaffPicks: async () => TITLES.filter((t) => t.staffPick),
   getRecentlyAdded: async (limit = 18) => [...TITLES].sort(byNewestAdded).slice(0, limit),
   getNewEpisodes,
   getByGenre: async (genre, type, limit = 18) =>
-    TITLES.filter((t) => t.genres.includes(genre) && (!type || t.type === type)).slice(0, limit),
+    TITLES.filter((t) => t.genres.includes(genre) && (!type || t.type === type))
+      .sort(byNewestAdded)
+      .slice(0, limit),
 
   getMoreLikeThis: async (title, limit = 12) =>
     TITLES.filter((t) => t.id !== title.id)
@@ -48,7 +52,7 @@ export const localSource: DataSource = {
     const heading = listHeading(key, opts.list);
     switch (opts.list) {
       case "new":
-        return { heading: heading!, titles: type === "movie" ? titles.filter((t) => t.year >= 2026) : await getNewEpisodes(type, 100) };
+        return { heading: heading!, titles: type === "movie" ? titles.filter(isNewMovie) : await getNewEpisodes(type, 100) };
       case "recent":
         return { heading: heading!, titles };
       case "az":

@@ -2,16 +2,17 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Bookmark, ChevronDown, X } from "lucide-react";
-import type { Title } from "@/data/types";
 import { PosterCard } from "@/components/cards/poster-card";
 import { PosterGrid } from "@/components/cards/poster-grid";
 import { useMyList } from "@/lib/user-data";
+import { useTitlesBySlugs } from "@/lib/use-titles";
 
 type Sort = "added" | "az";
 
-export function MyListView({ titles }: { titles: Title[] }) {
+export function MyListView() {
   const { list, remove } = useMyList();
   const [sort, setSort] = useState<Sort>("added");
+  const { titles, loading, error } = useTitlesBySlugs(list.map((e) => e.slug));
 
   const items = list
     .flatMap((entry) => {
@@ -26,7 +27,7 @@ export function MyListView({ titles }: { titles: Title[] }) {
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">My List</h1>
           <p className="mt-1 text-xs text-muted">
-            {items.length} title{items.length === 1 ? "" : "s"}
+            {list.length} title{list.length === 1 ? "" : "s"}
           </p>
         </div>
         {items.length > 1 && (
@@ -45,7 +46,18 @@ export function MyListView({ titles }: { titles: Title[] }) {
         )}
       </header>
 
-      {items.length > 0 ? (
+      {loading ? (
+        <PosterGrid>
+          {list.map((e) => (
+            <div key={e.slug} aria-hidden>
+              <div className="aspect-[2/3] animate-pulse rounded-lg bg-surface" />
+              <div className="mt-2 h-3 w-3/4 animate-pulse rounded bg-surface" />
+            </div>
+          ))}
+        </PosterGrid>
+      ) : error ? (
+        <p className="py-20 text-center text-sm text-muted">Couldn&rsquo;t load your list right now. Please try again in a moment.</p>
+      ) : items.length > 0 ? (
         <PosterGrid>
           {items.map(({ t }) => (
             <PosterCard

@@ -1,16 +1,22 @@
 "use client";
 import Link from "next/link";
 import { Play } from "lucide-react";
-import type { Title } from "@/data/types";
 import { Artwork } from "@/components/ui/artwork";
 import { Row } from "@/components/cards/row";
 import { continueWatching, useProgress } from "@/lib/user-data";
 import { watchHref } from "@/lib/catalog-utils";
+import { useTitlesBySlugs } from "@/lib/use-titles";
 
 /** Hidden entirely for viewers who haven't started anything yet. */
-export function ContinueWatching({ titles }: { titles: Title[] }) {
+export function ContinueWatching() {
   const progress = useProgress();
-  const items = continueWatching(progress)
+  const started = continueWatching(progress);
+  // full titles: we need the episode list for the "S2 · E7" label and thumbnail
+  const { titles } = useTitlesBySlugs(
+    started.map((p) => p.slug),
+    true,
+  );
+  const items = started
     .map((p) => {
       const title = titles.find((t) => t.slug === p.slug);
       if (!title) return null;

@@ -57,6 +57,8 @@ export interface Title {
   introEndSec?: number;
   /** Anime & series only */
   seasons?: Season[];
+  /** Newest playable episode. List endpoints send this instead of `seasons`. */
+  latestEpisode?: { season: number; id: string; number: number; releaseDate: string };
 }
 
 /** A single playable thing: a movie, or one episode of a show. */

@@ -5,6 +5,8 @@ import { BROWSE_TYPES, genreSlug, listHeading } from "./catalog-utils";
 
 /** How long server-rendered pages may reuse a response before refetching (seconds). */
 const REVALIDATE = 60;
+/** Give up on a slow API instead of hanging the page render. */
+const TIMEOUT_MS = 8000;
 
 export class ApiError extends Error {
   constructor(
@@ -23,7 +25,7 @@ export function createRemoteSource(baseUrl: string): DataSource {
   async function get<T>(path: string, query: Query = {}, opts: { allow404?: boolean } = {}): Promise<T | undefined> {
     const qs = new URLSearchParams(Object.entries(query).flatMap(([k, v]) => (v === undefined ? [] : [[k, String(v)]]))).toString();
     const url = `${base}${path}${qs ? `?${qs}` : ""}`;
-    const res = await fetch(url, { next: { revalidate: REVALIDATE } });
+    const res = await fetch(url, { next: { revalidate: REVALIDATE }, signal: AbortSignal.timeout(TIMEOUT_MS) });
     if (res.status === 404 && opts.allow404) return undefined;
     if (!res.ok) throw new ApiError(res.status, path);
     return (await res.json()) as T;
@@ -31,7 +33,7 @@ export function createRemoteSource(baseUrl: string): DataSource {
   const list = async (path: string, query: Query = {}) => (await get<Title[]>(path, query)) ?? [];
 
   return {
-    getTitles: () => list("/titles"),
+    getTitlesBySlugs: (slugs, full = false) => list("/titles", { slugs: slugs.join(","), full: full || undefined }),
     getTitle: (slug) => get<Title>(`/titles/${encodeURIComponent(slug)}`, {}, { allow404: true }),
     getFeatured: () => list("/titles", { featured: true }),
     getStaffPicks: () => list("/titles", { staffPick: true }),
@@ -54,11 +56,14 @@ export function createRemoteSource(baseUrl: string): DataSource {
       return { heading, titles: await list("/titles", { type, list: opts.list }) };
     },
 
-    search: async (query) => {
+    search: async (query, signal) => {
       const q = query.trim();
       if (!q) return [];
       // called from the browser while typing: always fresh
-      const res = await fetch(`${base}/search?q=${encodeURIComponent(q)}`, { cache: "no-store" });
+      const res = await fetch(`${base}/search?q=${encodeURIComponent(q)}`, {
+        cache: "no-store",
+        signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(TIMEOUT_MS)]) : AbortSignal.timeout(TIMEOUT_MS),
+      });
       if (!res.ok) throw new ApiError(res.status, "/search");
       return (await res.json()) as Title[];
     },

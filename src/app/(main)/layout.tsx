@@ -4,7 +4,11 @@ import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 import { getGenres } from "@/lib/api";
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
-  const [anime, movies, series] = await Promise.all([getGenres("anime"), getGenres("movie"), getGenres("series")]);
+  // The layout can't use this folder's error.tsx, so a failed genre fetch must not
+  // throw here: fall back to empty menus and let the page show its own error.
+  const [anime, movies, series] = await Promise.all(
+    (["anime", "movie", "series"] as const).map((t) => getGenres(t).catch(() => [] as string[])),
+  );
   return (
     <>
       <Header genres={{ anime, movies, series }} />

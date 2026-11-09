@@ -2,13 +2,30 @@
 import type { Episode, Title, TitleType } from "@/data/types";
 
 /**
- * "Today" for release-date logic. NEXT_PUBLIC_CATALOG_TODAY (YYYY-MM-DD) pins it
- * (keep it the same as the backend's CATALOG_TODAY); otherwise the real date.
+ * "Today" (UTC, YYYY-MM-DD) for release-date logic. NEXT_PUBLIC_CATALOG_TODAY pins it
+ * (keep it equal to the backend's CATALOG_TODAY). A function, not a constant, so a
+ * long-running server moves on to the next day.
  */
-export const TODAY: string = process.env.NEXT_PUBLIC_CATALOG_TODAY || new Date().toISOString().slice(0, 10);
+export const today = (): string => process.env.NEXT_PUBLIC_CATALOG_TODAY || new Date().toISOString().slice(0, 10);
 
 /** Released AND has a video to play. Anything else shows as "coming soon". */
-export const isReleased = (ep: Episode) => ep.releaseDate <= TODAY && !!ep.videoUrl;
+export const isReleased = (ep: Episode) => ep.releaseDate <= today() && !!ep.videoUrl;
+
+/** True if a release date is within the last 14 days (and not in the future). */
+export function isRecent(releaseDate: string) {
+  const days = (Date.parse(today()) - Date.parse(releaseDate)) / 86_400_000;
+  return days >= 0 && days <= 14;
+}
+
+/**
+ * Newest playable episode for badges: uses the API's `latestEpisode` on list
+ * results, or works it out from `seasons` on full titles.
+ */
+export function latestEpisodeInfo(t: Title): { season: number; number: number; releaseDate: string } | undefined {
+  if (t.latestEpisode) return t.latestEpisode;
+  const l = latestEpisode(t);
+  return l && { season: l.season, number: l.episode.number, releaseDate: l.episode.releaseDate };
+}
 
 /** Newest released episode of a show, if any. */
 export function latestEpisode(t: Title): { season: number; episode: Episode } | undefined {
@@ -19,20 +36,20 @@ export function latestEpisode(t: Title): { season: number; episode: Episode } | 
   return best;
 }
 
-/** True if the episode was released in the last 14 days. */
+/** True if the episode is released and came out in the last 14 days. */
 export function isNewEpisode(ep: Episode) {
-  if (!isReleased(ep)) return false;
-  const days = (Date.parse(TODAY) - Date.parse(ep.releaseDate)) / 86_400_000;
-  return days <= 14;
+  return isReleased(ep) && isRecent(ep.releaseDate);
 }
 
-/** The released episode after this one (crossing into the next season), if any. */
+/** The next released episode after this one (skipping unavailable ones, crossing seasons). */
 export function nextEpisode(title: Title, episodeId: string): { season: number; episode: Episode } | undefined {
   const flat = (title.seasons ?? []).flatMap((s) => s.episodes.map((e) => ({ season: s.number, episode: e })));
   const i = flat.findIndex((x) => x.episode.id === episodeId);
-  const next = i >= 0 ? flat[i + 1] : undefined;
-  return next && isReleased(next.episode) ? next : undefined;
+  return i >= 0 ? flat.slice(i + 1).find((x) => isReleased(x.episode)) : undefined;
 }
+
+/** Same rule as the backend: a movie is "new" if added in the last 84 days. */
+export const NEW_MOVIE_DAYS = 84;
 
 // ───────── Browse ─────────
 export const BROWSE_TYPES = {

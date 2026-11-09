@@ -9,15 +9,13 @@ import {
   getNewEpisodes,
   getRecentlyAdded,
   getStaffPicks,
-  getTitles,
-  isNewEpisode,
-  latestEpisode,
+  isRecent,
+  latestEpisodeInfo,
   typeLabel,
 } from "@/lib/api";
 
 export default async function HomePage() {
-  const [all, featured, newEpisodes, recent, picks, cozy, mystery] = await Promise.all([
-    getTitles(),
+  const [featured, newEpisodes, recent, picks, cozy, mystery] = await Promise.all([
     getFeatured(),
     getNewEpisodes("anime"),
     getRecentlyAdded(),
@@ -31,16 +29,16 @@ export default async function HomePage() {
       <Hero titles={featured} />
 
       <div className="relative z-10 -mt-8 sm:-mt-12">
-        <ContinueWatching titles={all} />
+        <ContinueWatching />
 
         <Row heading="New Episodes" sub="Anime" seeAll="/browse/anime?list=new">
           {newEpisodes.map((t) => {
-            const latest = latestEpisode(t)!;
+            const latest = latestEpisodeInfo(t);
             return (
               <PosterCard
                 key={t.id}
                 title={t}
-                badge={isNewEpisode(latest.episode) ? `NEW · E${latest.episode.number}` : undefined}
+                badge={latest && isRecent(latest.releaseDate) ? `NEW · E${latest.number}` : undefined}
                 meta={[t.sub && "Sub", t.dub && "Dub"].filter(Boolean).join(" | ")}
               />
             );

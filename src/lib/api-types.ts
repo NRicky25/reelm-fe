@@ -3,7 +3,8 @@ import type { BrowseKey } from "./catalog-utils";
 
 /** Everything the pages need from a catalogue source (local fake data or reelm-be). */
 export interface DataSource {
-  getTitles(): Promise<Title[]>;
+  /** Titles by slug (unknown slugs ignored). `full` includes seasons + episodes. */
+  getTitlesBySlugs(slugs: string[], full?: boolean): Promise<Title[]>;
   getTitle(slug: string): Promise<Title | undefined>;
   getFeatured(): Promise<Title[]>;
   getStaffPicks(): Promise<Title[]>;
@@ -13,6 +14,6 @@ export interface DataSource {
   getMoreLikeThis(title: Title, limit?: number): Promise<Title[]>;
   getGenres(type: TitleType): Promise<string[]>;
   browse(key: BrowseKey, opts: { genre?: string; list?: string }): Promise<{ heading: string; titles: Title[] }>;
-  search(query: string): Promise<Title[]>;
+  search(query: string, signal?: AbortSignal): Promise<Title[]>;
   getPlayable(slug: string, episodeId?: string): Promise<Playable | undefined>;
 }

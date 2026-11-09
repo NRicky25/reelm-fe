@@ -15,7 +15,7 @@ export const usingBackend = !!API_URL;
 
 const source: DataSource = API_URL ? createRemoteSource(API_URL) : localSource;
 
-export const getTitles = source.getTitles;
+export const getTitlesBySlugs = source.getTitlesBySlugs;
 export const getTitle = source.getTitle;
 export const getFeatured = source.getFeatured;
 export const getStaffPicks = source.getStaffPicks;

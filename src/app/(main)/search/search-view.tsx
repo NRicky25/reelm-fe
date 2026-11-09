@@ -7,7 +7,7 @@ import type { Title, TitleType } from "@/data/types";
 import { PosterCard } from "@/components/cards/poster-card";
 import { PosterGrid } from "@/components/cards/poster-grid";
 import { genreSlug } from "@/lib/catalog-utils";
-import { searchCatalog } from "@/lib/search-client";
+import { searchCatalog } from "@/lib/client-api";
 import { addRecentSearch, clearRecentSearches, useRecentSearches } from "@/lib/user-data";
 
 type TabId = "all" | TitleType;
@@ -23,6 +23,7 @@ export function SearchView({ animeGenres }: { animeGenres: string[] }) {
   const [query, setQuery] = useState(params.get("q") ?? "");
   const [tab, setTab] = useState<TabId>("all");
   const [results, setResults] = useState<Title[]>([]);
+  const [failed, setFailed] = useState(false);
   const recent = useRecentSearches();
   const input = useRef<HTMLInputElement>(null);
 
@@ -34,8 +35,22 @@ export function SearchView({ animeGenres }: { animeGenres: string[] }) {
   // blocks / overrides other navigations, e.g. clicking the logo to go Home.
   useEffect(() => {
     const q = query.trim();
-    let alive = true;
-    searchCatalog(q).then((r) => alive && setResults(r));
+    // Wait for a short pause in typing, and cancel the previous request when
+    // the query changes, so we don't fire one request per keystroke.
+    const controller = new AbortController();
+    const fetchTimer = setTimeout(() => {
+      searchCatalog(q, controller.signal)
+        .then((r) => {
+          setResults(r);
+          setFailed(false);
+        })
+        .catch((err: unknown) => {
+          if (controller.signal.aborted) return; // superseded by a newer query
+          console.error("Search failed", err);
+          setResults([]);
+          setFailed(true);
+        });
+    }, q ? 200 : 0);
     const id = setTimeout(() => {
       if (window.location.pathname !== "/search") return; // already navigating away
       const next = q ? `/search?q=${encodeURIComponent(q)}` : "/search";
@@ -43,7 +58,8 @@ export function SearchView({ animeGenres }: { animeGenres: string[] }) {
       if (q.length >= 2) addRecentSearch(q);
     }, 600);
     return () => {
-      alive = false;
+      controller.abort();
+      clearTimeout(fetchTimer);
       clearTimeout(id);
     };
   }, [query]);
@@ -142,7 +158,12 @@ export function SearchView({ animeGenres }: { animeGenres: string[] }) {
           </div>
 
           <div className="mt-8">
-            {shown.length > 0 ? (
+            {failed ? (
+              <div className="py-20 text-center">
+                <p className="font-semibold">Search isn&rsquo;t available right now</p>
+                <p className="mt-1 text-sm text-muted">Please try again in a moment.</p>
+              </div>
+            ) : shown.length > 0 ? (
               <PosterGrid>
                 {shown.map((t) => (
                   <PosterCard key={t.id} title={t} highlight={q} />
