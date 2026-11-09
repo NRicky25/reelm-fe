@@ -3,7 +3,7 @@ import { Play } from "lucide-react";
 import type { Title } from "@/data/types";
 import { Artwork } from "@/components/ui/artwork";
 import { MyListButton } from "./my-list-button";
-import { typeLabel, watchHref } from "@/lib/api";
+import { typeLabel, watchHref } from "@/lib/catalog-utils";
 
 export interface PosterCardProps {
   title: Title;

@@ -5,7 +5,7 @@ import type { Title } from "@/data/types";
 import { Artwork } from "@/components/ui/artwork";
 import { Row } from "@/components/cards/row";
 import { continueWatching, useProgress } from "@/lib/user-data";
-import { watchHref } from "@/lib/api";
+import { watchHref } from "@/lib/catalog-utils";
 
 /** Hidden entirely for viewers who haven't started anything yet. */
 export function ContinueWatching({ titles }: { titles: Title[] }) {

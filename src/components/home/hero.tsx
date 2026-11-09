@@ -5,7 +5,7 @@ import { Info, Play } from "lucide-react";
 import type { Title } from "@/data/types";
 import { Artwork } from "@/components/ui/artwork";
 import { MyListButton } from "@/components/cards/my-list-button";
-import { formatDuration, typeLabel, watchHref } from "@/lib/api";
+import { formatDuration, typeLabel, watchHref } from "@/lib/catalog-utils";
 
 const ROTATE_MS = 8000;
 

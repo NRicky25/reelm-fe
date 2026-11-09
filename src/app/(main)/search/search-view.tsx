@@ -4,10 +4,10 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Clock, Search, X } from "lucide-react";
 import type { Title, TitleType } from "@/data/types";
-import { GENRES } from "@/data/titles";
 import { PosterCard } from "@/components/cards/poster-card";
 import { PosterGrid } from "@/components/cards/poster-grid";
-import { genreSlug, search } from "@/lib/api";
+import { genreSlug } from "@/lib/catalog-utils";
+import { searchCatalog } from "@/lib/search-client";
 import { addRecentSearch, clearRecentSearches, useRecentSearches } from "@/lib/user-data";
 
 type TabId = "all" | TitleType;
@@ -18,7 +18,7 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "series", label: "Series" },
 ];
 
-export function SearchView() {
+export function SearchView({ animeGenres }: { animeGenres: string[] }) {
   const params = useSearchParams();
   const [query, setQuery] = useState(params.get("q") ?? "");
   const [tab, setTab] = useState<TabId>("all");
@@ -35,7 +35,7 @@ export function SearchView() {
   useEffect(() => {
     const q = query.trim();
     let alive = true;
-    search(q).then((r) => alive && setResults(r));
+    searchCatalog(q).then((r) => alive && setResults(r));
     const id = setTimeout(() => {
       if (window.location.pathname !== "/search") return; // already navigating away
       const next = q ? `/search?q=${encodeURIComponent(q)}` : "/search";
@@ -110,7 +110,7 @@ export function SearchView() {
           <section>
             <h2 className="mb-3 text-sm font-bold">Browse anime by genre</h2>
             <div className="flex flex-wrap gap-2">
-              {GENRES.anime.map((g) => (
+              {animeGenres.map((g) => (
                 <Link
                   key={g}
                   href={`/browse/anime?genre=${genreSlug(g)}`}

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { ArrowDownUp, Check, ChevronDown, Lock, Play } from "lucide-react";
 import type { Title } from "@/data/types";
 import { Artwork } from "@/components/ui/artwork";
-import { formatDuration, isNewEpisode, isReleased, watchHref } from "@/lib/api";
+import { formatDuration, isNewEpisode, isReleased, watchHref } from "@/lib/catalog-utils";
 import { continueWatching, isFinished, useProgress } from "@/lib/user-data";
 
 type Tab = "episodes" | "more" | "details";

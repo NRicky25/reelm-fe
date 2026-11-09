@@ -7,8 +7,9 @@ import { Logo } from "./logo";
 import { CategoryMenu } from "./category-menu";
 import { usePopover } from "@/components/ui/use-popover";
 import { useProfile } from "@/lib/user-data";
+import type { BrowseKey } from "@/lib/catalog-utils";
 
-export function Header() {
+export function Header({ genres }: { genres: Record<BrowseKey, string[]> }) {
   const pathname = usePathname();
   const overHero = pathname === "/" || pathname.startsWith("/title/");
   const [scrolled, setScrolled] = useState(false);
@@ -46,9 +47,9 @@ export function Header() {
           <NavLink href="/" active={pathname === "/"}>
             Home
           </NavLink>
-          <CategoryMenu browseKey="anime" />
-          <CategoryMenu browseKey="movies" />
-          <CategoryMenu browseKey="series" />
+          <CategoryMenu browseKey="anime" genres={genres.anime} />
+          <CategoryMenu browseKey="movies" genres={genres.movies} />
+          <CategoryMenu browseKey="series" genres={genres.series} />
           <NavLink href="/my-list" active={pathname === "/my-list"}>
             My List
           </NavLink>

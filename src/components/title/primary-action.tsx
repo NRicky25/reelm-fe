@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Play } from "lucide-react";
 import type { Title } from "@/data/types";
 import { isFinished, useProgress } from "@/lib/user-data";
-import { isReleased, nextEpisode, watchHref } from "@/lib/api";
+import { isReleased, nextEpisode, watchHref } from "@/lib/catalog-utils";
 
 /**
  * "Play S1 · E1" for new viewers, "Continue S1 · E7" (with a progress bar)

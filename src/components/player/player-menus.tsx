@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Check, Play, X } from "lucide-react";
 import type { Season } from "@/data/types";
-import { isReleased, watchHref, formatDuration } from "@/lib/api";
+import { isReleased, watchHref, formatDuration } from "@/lib/catalog-utils";
 
 export interface MenuSection {
   heading: string;

@@ -38,13 +38,25 @@ src/
     └── user-data.ts     My List, watch progress, profile, player prefs (localStorage for now)
 ```
 
-## Connecting a backend later
+## Data source: backend or built-in fake data
 
-1. Keep the shapes in `src/data/types.ts`.
-2. Replace the function bodies in `src/lib/api.ts` with `fetch()` calls to your API. The pages don't need to change.
-3. Replace the localStorage stores in `src/lib/user-data.ts` with API calls (My List, progress, profile).
-4. Put real video stream URLs (from Bunny Stream, Mux, Cloudflare Stream, etc.) in `videoUrl`. The player handles `.m3u8` (HLS) and `.mp4`.
-5. Add `posterUrl` / `backdropUrl` to titles. Real images replace the gradient placeholders automatically (add the image host to `images.remotePatterns` in `next.config.ts`).
+`src/lib/api.ts` picks the data source:
+
+| `NEXT_PUBLIC_API_URL` | Data comes from |
+|---|---|
+| set (e.g. in `.env.local`) | **reelm-be** (`src/lib/api-remote.ts`) |
+| not set | the built-in fake catalogue (`src/lib/api-local.ts`) |
+
+```bash
+# .env.local
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+# optional: pin "today" for release dates (keep equal to the backend's CATALOG_TODAY)
+# NEXT_PUBLIC_CATALOG_TODAY=2026-11-08
+```
+
+Use `127.0.0.1` rather than `localhost`: Node may resolve `localhost` to IPv6 while uvicorn listens on IPv4.
+Restart `npm run dev` after changing env files. My List, watch progress and settings still live in the
+browser (`src/lib/user-data.ts`) until accounts exist.
 
 ## Placeholder artwork & sample videos
 

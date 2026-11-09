@@ -15,7 +15,8 @@ export interface Episode {
   thumbUrl?: string;
   introStartSec?: number;
   introEndSec?: number;
-  videoUrl: string;
+  /** Missing when the episode has no playable video yet. */
+  videoUrl?: string;
 }
 
 export interface Season {

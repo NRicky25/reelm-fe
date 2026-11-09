@@ -2,8 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
-import { BROWSE_TYPES, genreSlug, type BrowseKey } from "@/lib/api";
-import { GENRES } from "@/data/titles";
+import { BROWSE_TYPES, genreSlug, type BrowseKey } from "@/lib/catalog-utils";
 import { usePopover } from "@/components/ui/use-popover";
 
 function quickLinks(key: BrowseKey) {
@@ -24,11 +23,11 @@ function quickLinks(key: BrowseKey) {
   return { links, extra };
 }
 
-export function CategoryMenu({ browseKey }: { browseKey: BrowseKey }) {
+export function CategoryMenu({ browseKey, genres }: { browseKey: BrowseKey; genres: string[] }) {
   const pop = usePopover();
   const pathname = usePathname();
   const active = pathname.startsWith(`/browse/${browseKey}`);
-  const { label, type } = BROWSE_TYPES[browseKey];
+  const { label } = BROWSE_TYPES[browseKey];
   const { links, extra } = quickLinks(browseKey);
   const menuId = `menu-${browseKey}`;
 
@@ -71,7 +70,7 @@ export function CategoryMenu({ browseKey }: { browseKey: BrowseKey }) {
           <div className="flex-1 p-4">
             <p className="mb-2.5 text-[10px] font-semibold tracking-[0.15em] text-subtle">GENRES</p>
             <div className="grid grid-cols-3 gap-1">
-              {GENRES[type].map((g) => (
+              {genres.map((g) => (
                 <MenuLink key={g} href={`/browse/${browseKey}?genre=${genreSlug(g)}`} onClick={pop.hide}>
                   {g}
                 </MenuLink>
