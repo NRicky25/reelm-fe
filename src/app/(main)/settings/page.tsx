@@ -95,7 +95,7 @@ function SelectRow({
             </option>
           ))}
         </select>
-        <ChevronDown size={15} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted" />
+        <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted flex"><ChevronDown size={15} /></span>
       </div>
     </div>
   );

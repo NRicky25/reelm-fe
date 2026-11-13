@@ -8,7 +8,7 @@ export function Row({
   heading,
   sub,
   seeAll,
-  itemWidth = "w-[150px] sm:w-[170px]",
+  itemWidth = "w-[9.375rem] sm:w-[10.625rem]",
   children,
 }: {
   heading: string;

@@ -31,7 +31,7 @@ export default async function TitlePage({ params }: Props) {
 
   return (
     <>
-      <section className="relative min-h-[560px] overflow-hidden pt-16">
+      <section className="relative min-h-[35rem] overflow-hidden pt-16">
         <Artwork title={title} variant="backdrop" className="!absolute inset-0" priority />
         <div className="absolute inset-0 bg-gradient-to-r from-bg via-bg/75 to-bg/10" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/20 to-transparent" />
@@ -40,11 +40,11 @@ export default async function TitlePage({ params }: Props) {
           <Artwork
             title={title}
             variant="poster"
-            className="hidden aspect-[2/3] w-[180px] shrink-0 rounded-xl shadow-[0_16px_40px_rgba(0,0,0,0.5)] ring-1 ring-white/10 sm:block lg:w-[210px]"
+            className="hidden aspect-[2/3] w-[11.25rem] shrink-0 rounded-xl shadow-[0_1rem_2.5rem_rgba(0,0,0,0.5)] ring-1 ring-white/10 sm:block lg:w-[13.125rem]"
           />
           <div className="max-w-2xl">
             <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-balance sm:text-4xl lg:text-5xl">{title.name}</h1>
-            <p className="mt-3 text-[13px] text-muted">{meta.join(" · ")}</p>
+            <p className="mt-3 text-[0.8125rem] text-muted">{meta.join(" · ")}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {title.genres.map((g) => (
                 <span key={g} className="rounded-full bg-surface/90 px-3 py-1 text-xs text-soft">
@@ -52,7 +52,7 @@ export default async function TitlePage({ params }: Props) {
                 </span>
               ))}
             </div>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-soft sm:text-[15px]">{title.description}</p>
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-soft sm:text-[0.9375rem]">{title.description}</p>
             <div className="mt-6 flex flex-wrap items-start gap-3">
               <PrimaryAction title={title} />
               <MyListButton slug={title.slug} />

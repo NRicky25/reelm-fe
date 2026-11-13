@@ -4,9 +4,9 @@ import { type RefObject, useLayoutEffect, useState } from "react";
 const GAP = 6; // px between the picture's edge (or the controls) and the subtitles
 const FALLBACK = 0.07; // in the picture: this share of the height above the bottom
 const LINE_HEIGHT = 1.375; // Tailwind "leading-snug"
-const PADDING_Y = 12; // per line py-0.5 (2 × 4px) + the 4px gap between two lines (gap-1)
+const PADDING_Y_REM = 12; // per line py-0.5 (2 × 4px) + the 4px gap between two lines (gap-1)
 const MAX_LINES = 2; // the Subtitle Maker never makes more
-const MIN_FONT = 15; // never shrink below this to fit the black bar
+const MIN_FONT_PX = 15; // never shrink below this to fit the black bar
 
 export interface SubtitleLayout {
   /** Distance from the player's top (in the bar) or bottom (elsewhere), in px. */
@@ -36,9 +36,14 @@ export function subtitleLayout(opts: {
   boxHeight: number;
   /** Height of the control bar from the player's bottom; 0 when hidden. */
   controlsHeight: number;
+  /** The page's root font size in px (it grows on TV-sized screens); default 16. */
+  rootFontPx?: number;
 }): SubtitleLayout {
   const { playerWidth: W, playerHeight: H, videoWidth: vw, videoHeight: vh, boxHeight, controlsHeight } = opts;
-  const baseFont = Math.min(32, Math.max(16, W * 0.022)); // same as clamp(16px, 2.2vw, 32px)
+  const s = (opts.rootFontPx ?? 16) / 16; // UI scale: 1 up to desktop sizes, more on big screens
+  const baseFont = Math.min(32 * s, Math.max(16, W * 0.022)); // same as clamp(1rem, 2.2vw, 2rem)
+  const PADDING_Y = PADDING_Y_REM * s;
+  const MIN_FONT = MIN_FONT_PX * s;
   let bar = 0;
   if (vw > 0 && vh > 0 && W > 0 && H > 0) {
     const shownHeight = Math.min(H, W * (vh / vw)); // "object-contain"
@@ -90,6 +95,7 @@ export function useSubtitleLayout(
         videoHeight: video?.videoHeight ?? 0,
         boxHeight: box.current?.offsetHeight ?? 0,
         controlsHeight,
+        rootFontPx: parseFloat(getComputedStyle(document.documentElement).fontSize) || 16,
       });
       setLayout((prev) =>
         prev.top === next.top && prev.bottom === next.bottom && prev.fontPx === next.fontPx && prev.overPicture === next.overPicture

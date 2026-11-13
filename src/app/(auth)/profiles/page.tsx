@@ -22,9 +22,9 @@ export default function ProfilesPage() {
               }}
               className="group flex flex-col items-center gap-3"
             >
-              <span className="rounded-3xl p-[3px] transition-[background] duration-200 group-hover:bg-[linear-gradient(135deg,var(--color-lavender),var(--color-mauve))] group-focus-visible:bg-[linear-gradient(135deg,var(--color-lavender),var(--color-mauve))]">
+              <span className="rounded-3xl p-[0.1875rem] transition-[background] duration-200 group-hover:bg-[linear-gradient(135deg,var(--color-lavender),var(--color-mauve))] group-focus-visible:bg-[linear-gradient(135deg,var(--color-lavender),var(--color-mauve))]">
                 <span
-                  className="grid size-24 place-items-center rounded-[22px] text-4xl font-extrabold text-fg/90 transition-transform duration-200 group-hover:scale-[0.97] sm:size-28"
+                  className="grid size-24 place-items-center rounded-[1.375rem] text-4xl font-extrabold text-fg/90 transition-transform duration-200 group-hover:scale-[0.97] sm:size-28"
                   style={{ background: `linear-gradient(150deg, ${p.color}, #24252b)` }}
                 >
                   {p.name[0]}
@@ -36,7 +36,7 @@ export default function ProfilesPage() {
         ))}
         <li className="hidden sm:block">
           <div className="flex flex-col items-center gap-3 opacity-60" title="Not available in the demo">
-            <span className="grid size-[118px] place-items-center rounded-3xl border-2 border-dashed border-line text-muted">
+            <span className="grid size-[7.375rem] place-items-center rounded-3xl border-2 border-dashed border-line text-muted">
               <Plus size={30} />
             </span>
             <span className="text-sm text-muted">Add profile</span>

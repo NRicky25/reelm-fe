@@ -40,7 +40,7 @@ export default async function BrowseIndex() {
 
 function Pill({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="rounded-full border border-line px-3.5 py-2 text-[13px] text-soft transition-colors hover:bg-surface">
+    <Link href={href} className="rounded-full border border-line px-3.5 py-2 text-[0.8125rem] text-soft transition-colors hover:bg-surface">
       {children}
     </Link>
   );

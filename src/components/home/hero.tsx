@@ -31,7 +31,7 @@ export function Hero({ titles }: { titles: Title[] }) {
 
   return (
     <section
-      className="relative h-[78vh] min-h-[520px] max-h-[820px] w-full overflow-hidden"
+      className="relative h-[78vh] min-h-[32.5rem] max-h-[51.25rem] w-full overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       aria-roledescription="carousel"
@@ -51,10 +51,10 @@ export function Hero({ titles }: { titles: Title[] }) {
       <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/10 to-transparent" />
 
       <div key={t.id} className="absolute inset-x-gutter bottom-14 max-w-xl animate-[heroIn_500ms_cubic-bezier(0.22,1,0.36,1)] sm:bottom-20">
-        <p className="text-brand text-[11px] font-bold tracking-[0.18em]">FEATURED · {typeLabel(t).toUpperCase()}</p>
+        <p className="text-brand text-[0.6875rem] font-bold tracking-[0.18em]">FEATURED · {typeLabel(t).toUpperCase()}</p>
         <h1 className="mt-2 text-4xl font-extrabold leading-[1.05] tracking-tight text-balance sm:text-5xl lg:text-6xl">{t.name}</h1>
-        <p className="mt-3 text-[13px] text-muted">{meta.join(" · ")}</p>
-        <p className="mt-3 line-clamp-3 max-w-lg text-sm leading-relaxed text-soft sm:text-[15px]">{t.description}</p>
+        <p className="mt-3 text-[0.8125rem] text-muted">{meta.join(" · ")}</p>
+        <p className="mt-3 line-clamp-3 max-w-lg text-sm leading-relaxed text-soft sm:text-[0.9375rem]">{t.description}</p>
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <Link
             href={watchHref(t.slug)}

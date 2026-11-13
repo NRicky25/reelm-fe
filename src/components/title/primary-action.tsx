@@ -63,7 +63,7 @@ export function PrimaryAction({ title }: { title: Title }) {
           <div className="h-1 overflow-hidden rounded-full bg-white/15">
             <div className="bg-brand h-full rounded-full" style={{ width: `${ratio * 100}%` }} />
           </div>
-          <p className="mt-1.5 text-[11px] text-muted">{caption}</p>
+          <p className="mt-1.5 text-[0.6875rem] text-muted">{caption}</p>
         </div>
       )}
     </div>

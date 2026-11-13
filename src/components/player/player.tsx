@@ -367,7 +367,7 @@ export function Player(props: PlayerProps) {
               background is taller than the line spacing and would overlap the next line */}
           <p
             ref={subtitleBox}
-            className={`flex max-w-[min(92%,1100px)] flex-col items-center gap-1 text-center font-semibold leading-snug ${
+            className={`flex max-w-[min(92%,68.75rem)] flex-col items-center gap-1 text-center font-semibold leading-snug ${
               subtitleBackground === "white" ? "text-black" : "text-white"
             } ${subtitleBackground === "none" ? "[text-shadow:0_0_6px_rgba(0,0,0,.95),0_2px_3px_rgba(0,0,0,.9)]" : ""}`}
           >
@@ -467,7 +467,7 @@ export function Player(props: PlayerProps) {
             type="button"
             onClick={togglePlay}
             aria-label={playing ? "Pause" : "Play"}
-            className="pointer-events-auto grid size-16 place-items-center rounded-full border border-white/20 bg-bg/50 backdrop-blur transition-transform duration-150 active:scale-90 sm:size-[72px]"
+            className="pointer-events-auto grid size-16 place-items-center rounded-full border border-white/20 bg-bg/50 backdrop-blur transition-transform duration-150 active:scale-90 sm:size-[4.5rem]"
           >
             {playing ? <Pause size={28} fill="currentColor" strokeWidth={0} /> : <Play size={28} fill="currentColor" strokeWidth={0} className="ml-1" />}
           </button>
@@ -479,7 +479,7 @@ export function Player(props: PlayerProps) {
         {/* bottom bar */}
         <div
           ref={controlBar}
-          className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pb-[max(12px,env(safe-area-inset-bottom))] pt-14 sm:px-6 sm:pb-5"
+          className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-14 sm:px-6 sm:pb-5"
         >
           <ProgressBar
             current={current}
@@ -516,13 +516,13 @@ export function Player(props: PlayerProps) {
                 className="h-1 w-0 cursor-pointer appearance-none rounded-full bg-white/30 opacity-0 transition-all duration-200 accent-lavender group-hover/vol:ml-1 group-hover/vol:w-20 group-hover/vol:opacity-100 focus:ml-1 focus:w-20 focus:opacity-100"
               />
             </div>
-            <span className="ml-1 text-xs tabular-nums text-soft sm:text-[13px]">
+            <span className="ml-1 text-xs tabular-nums text-soft sm:text-[0.8125rem]">
               {formatTime(current)} / {formatTime(duration)}
             </span>
 
             <div className="ml-auto flex items-center gap-1 sm:gap-2">
               {props.nextHref && (
-                <Link href={props.nextHref} replace className="hidden h-10 items-center gap-2 rounded-full px-3 text-[13px] text-soft transition-colors hover:bg-white/10 hover:text-fg md:flex">
+                <Link href={props.nextHref} replace className="hidden h-10 items-center gap-2 rounded-full px-3 text-[0.8125rem] text-soft transition-colors hover:bg-white/10 hover:text-fg md:flex">
                   <SkipForward size={18} />
                   {props.nextLabel ?? "Next Episode"}
                 </Link>

@@ -71,7 +71,7 @@ export function SearchView({ animeGenres }: { animeGenres: string[] }) {
   return (
     <div className="px-gutter pt-20 sm:pt-24">
       <div className="relative mx-auto max-w-3xl">
-        <Search size={22} className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-muted" />
+        <span className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-muted flex"><Search size={22} /></span>
         <input
           ref={input}
           type="search"
@@ -80,7 +80,7 @@ export function SearchView({ animeGenres }: { animeGenres: string[] }) {
           placeholder="Search titles, genres…"
           aria-label="Search"
           enterKeyHint="search"
-          className="h-14 w-full rounded-2xl border border-line bg-surface pl-14 pr-14 text-base outline-none focus-visible:outline-none transition-[border-color,box-shadow] placeholder:text-subtle focus:border-lavender/60 focus:shadow-[0_0_0_4px_rgba(169,156,240,0.15)] sm:h-16 sm:text-lg [&::-webkit-search-cancel-button]:hidden"
+          className="h-14 w-full rounded-2xl border border-line bg-surface pl-14 pr-14 text-base outline-none focus-visible:outline-none transition-[border-color,box-shadow] placeholder:text-subtle focus:border-lavender/60 focus:shadow-[0_0_0_0.25rem_rgba(169,156,240,0.15)] sm:h-16 sm:text-lg [&::-webkit-search-cancel-button]:hidden"
         />
         {query && (
           <button
@@ -130,7 +130,7 @@ export function SearchView({ animeGenres }: { animeGenres: string[] }) {
                 <Link
                   key={g}
                   href={`/browse/anime?genre=${genreSlug(g)}`}
-                  className="rounded-full border border-line px-3.5 py-2 text-[13px] text-soft transition-colors hover:bg-surface"
+                  className="rounded-full border border-line px-3.5 py-2 text-[0.8125rem] text-soft transition-colors hover:bg-surface"
                 >
                   {g}
                 </Link>

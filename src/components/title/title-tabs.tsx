@@ -77,7 +77,7 @@ function Episodes({ title }: { title: Title }) {
               </option>
             ))}
           </select>
-          <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted" />
+          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted flex"><ChevronDown size={16} /></span>
         </div>
         <span className="text-xs text-muted">
           {released} episode{released === 1 ? "" : "s"}
@@ -93,7 +93,7 @@ function Episodes({ title }: { title: Title }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-x-3 gap-y-6 sm:grid-cols-[repeat(auto-fill,minmax(220px,1fr))] sm:gap-x-4">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(10.625rem,1fr))] gap-x-3 gap-y-6 sm:grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] sm:gap-x-4">
         {episodes.map((ep) => {
           const p = progress[ep.id];
           const watched = isFinished(p);
@@ -109,7 +109,7 @@ function Episodes({ title }: { title: Title }) {
                     {new Date(ep.releaseDate).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" })}
                   </span>
                 </div>
-                <p className="mt-2 text-[11px] text-muted">E{ep.number} · Coming soon</p>
+                <p className="mt-2 text-[0.6875rem] text-muted">E{ep.number} · Coming soon</p>
               </div>
             );
 
@@ -126,11 +126,11 @@ function Episodes({ title }: { title: Title }) {
                   className="aspect-video transition-[filter] duration-200 group-hover:brightness-115"
                 />
                 {isNewEpisode(ep) && !watched && (
-                  <span className="absolute left-2 top-2 rounded-full bg-bg/85 px-2 py-0.5 text-[10px] font-bold">
+                  <span className="absolute left-2 top-2 rounded-full bg-bg/85 px-2 py-0.5 text-[0.625rem] font-bold">
                     <span className="text-brand">NEW</span>
                   </span>
                 )}
-                <span className="absolute bottom-2 right-2 rounded-md bg-bg/85 px-1.5 py-0.5 text-[10px] font-medium">
+                <span className="absolute bottom-2 right-2 rounded-md bg-bg/85 px-1.5 py-0.5 text-[0.625rem] font-medium">
                   {isCurrent && p ? `${Math.max(1, Math.round((p.duration - p.position) / 60))}m left` : formatDuration(ep.durationSec)}
                 </span>
                 <span
@@ -146,7 +146,7 @@ function Episodes({ title }: { title: Title }) {
                   </div>
                 )}
               </div>
-              <p className={`mt-2 flex items-center gap-1 text-[11px] ${isCurrent ? "font-bold" : "text-muted"}`}>
+              <p className={`mt-2 flex items-center gap-1 text-[0.6875rem] ${isCurrent ? "font-bold" : "text-muted"}`}>
                 {isCurrent ? (
                   <span className="text-brand">E{ep.number} · Continue watching</span>
                 ) : (
@@ -161,7 +161,7 @@ function Episodes({ title }: { title: Title }) {
                   </>
                 )}
               </p>
-              <p className="mt-0.5 line-clamp-1 text-[13px] font-semibold">{ep.name}</p>
+              <p className="mt-0.5 line-clamp-1 text-[0.8125rem] font-semibold">{ep.name}</p>
               <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted">{ep.description}</p>
             </Link>
           );
@@ -182,7 +182,7 @@ function Details({ title }: { title: Title }) {
     ["Released", String(title.year)],
   ];
   return (
-    <dl className="grid max-w-2xl grid-cols-[120px_1fr] gap-x-6 gap-y-3 text-sm">
+    <dl className="grid max-w-2xl grid-cols-[7.5rem_1fr] gap-x-6 gap-y-3 text-sm">
       {rows.map(([k, v]) => (
         <div key={k} className="contents">
           <dt className="text-muted">{k}</dt>

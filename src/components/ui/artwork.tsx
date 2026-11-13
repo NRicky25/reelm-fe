@@ -6,8 +6,9 @@ import type { Title } from "@/data/types";
 type ArtTitle = Pick<Title, "name" | "colors" | "posterUrl" | "backdropUrl" | "posterFocusX">;
 
 const SIZES = {
-  poster: "(max-width: 640px) 45vw, 220px",
-  landscape: "(max-width: 640px) 70vw, 320px",
+  // on TV-sized screens the whole UI scales with the width (see globals.css)
+  poster: "(max-width: 640px) 45vw, (min-width: 1800px) 15vw, 220px",
+  landscape: "(max-width: 640px) 70vw, (min-width: 1800px) 22vw, 320px",
   backdrop: "100vw",
 };
 
@@ -79,7 +80,7 @@ function PosterName({ name }: { name: string }) {
   return (
     <>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
-      <span className="pointer-events-none absolute inset-x-3 bottom-3 line-clamp-3 text-[13px] font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
+      <span className="pointer-events-none absolute inset-x-3 bottom-3 line-clamp-3 text-[0.8125rem] font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_0.0625rem_0.25rem_rgba(0,0,0,0.6)]">
         {name}
       </span>
     </>

@@ -38,7 +38,7 @@ export function CategoryMenu({ browseKey, genres }: { browseKey: BrowseKey; genr
         aria-expanded={pop.open}
         aria-controls={menuId}
         onClick={pop.toggle}
-        className={`flex items-center gap-1 rounded-lg px-3.5 py-2 text-[15px] font-medium transition-colors duration-150 ${
+        className={`flex items-center gap-1 rounded-lg px-3.5 py-2 text-[0.9375rem] font-medium transition-colors duration-150 ${
           pop.open ? "bg-surface text-fg" : active ? "text-fg" : "text-muted hover:text-fg"
         }`}
       >
@@ -52,9 +52,9 @@ export function CategoryMenu({ browseKey, genres }: { browseKey: BrowseKey; genr
           pop.open ? "visible translate-y-0 opacity-100" : "invisible -translate-y-1 opacity-0"
         }`}
       >
-        <div className="flex w-140 overflow-hidden rounded-2xl border border-line bg-elevated shadow-[0_18px_40px_rgba(0,0,0,0.55)]">
+        <div className="flex w-140 overflow-hidden rounded-2xl border border-line bg-elevated shadow-[0_1.125rem_2.5rem_rgba(0,0,0,0.55)]">
           <nav className="w-45 shrink-0 border-r border-line bg-[#212227] p-4" aria-label={`Browse ${label}`}>
-            <p className="mb-2.5 text-[10px] font-semibold tracking-[0.15em] text-subtle">BROWSE {label.toUpperCase()}</p>
+            <p className="mb-2.5 text-[0.625rem] font-semibold tracking-[0.15em] text-subtle">BROWSE {label.toUpperCase()}</p>
             {links.map((l) => (
               <MenuLink key={l.href} href={l.href} onClick={pop.hide}>
                 {l.label}
@@ -68,7 +68,7 @@ export function CategoryMenu({ browseKey, genres }: { browseKey: BrowseKey; genr
             ))}
           </nav>
           <div className="flex-1 p-4">
-            <p className="mb-2.5 text-[10px] font-semibold tracking-[0.15em] text-subtle">GENRES</p>
+            <p className="mb-2.5 text-[0.625rem] font-semibold tracking-[0.15em] text-subtle">GENRES</p>
             <div className="grid grid-cols-3 gap-1">
               {genres.map((g) => (
                 <MenuLink key={g} href={`/browse/${browseKey}?genre=${genreSlug(g)}`} onClick={pop.hide}>
@@ -88,7 +88,7 @@ function MenuLink({ href, onClick, children }: { href: string; onClick: () => vo
     <Link
       href={href}
       onClick={onClick}
-      className="block rounded-lg px-2.5 py-2 text-[13px] text-soft transition-colors duration-100 hover:bg-[#2e2f36] hover:text-fg"
+      className="block rounded-lg px-2.5 py-2 text-[0.8125rem] text-soft transition-colors duration-100 hover:bg-[#2e2f36] hover:text-fg"
     >
       {children}
     </Link>

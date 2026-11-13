@@ -41,7 +41,7 @@ export function ContinueWatching() {
   if (items.length === 0) return null;
 
   return (
-    <Row heading="Continue Watching" itemWidth="w-[260px] sm:w-[300px]">
+    <Row heading="Continue Watching" itemWidth="w-[16.25rem] sm:w-[18.75rem]">
       {items.map(({ p, title, label, left, thumb, href }) => (
         <Link key={title.slug} href={href} className="group block">
           <div className="relative overflow-hidden rounded-lg ring-1 ring-white/5">
@@ -55,8 +55,8 @@ export function ContinueWatching() {
               <div className="bg-brand h-full" style={{ width: `${Math.min(100, (p.position / p.duration) * 100)}%` }} />
             </div>
           </div>
-          <p className="mt-2 line-clamp-1 text-[13px] font-semibold">{title.name}</p>
-          <p className="text-[11px] text-muted">
+          <p className="mt-2 line-clamp-1 text-[0.8125rem] font-semibold">{title.name}</p>
+          <p className="text-[0.6875rem] text-muted">
             {label && `${label} · `}
             {left}m left
           </p>

@@ -39,7 +39,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
               name="password"
               type={show ? "text" : "password"}
               autoComplete={isLogin ? "current-password" : "new-password"}
-              className="h-11 w-full rounded-xl border border-line bg-surface px-4 pr-11 text-sm outline-none transition-[border-color,box-shadow] focus:border-lavender/60 focus:shadow-[0_0_0_4px_rgba(169,156,240,0.15)] focus-visible:outline-none"
+              className="h-11 w-full rounded-xl border border-line bg-surface px-4 pr-11 text-sm outline-none transition-[border-color,box-shadow] focus:border-lavender/60 focus:shadow-[0_0_0_0.25rem_rgba(169,156,240,0.15)] focus-visible:outline-none"
             />
             <button
               type="button"
@@ -76,7 +76,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           {isLogin ? "Create an account" : "Sign in"}
         </Link>
       </p>
-      <p className="mt-4 rounded-lg bg-surface/60 px-3 py-2 text-center text-[11px] text-subtle">Demo: any email and password will work.</p>
+      <p className="mt-4 rounded-lg bg-surface/60 px-3 py-2 text-center text-[0.6875rem] text-subtle">Demo: any email and password will work.</p>
     </div>
   );
 }
@@ -92,7 +92,7 @@ function Field({ label, name, type = "text", autoComplete }: { label: string; na
         name={name}
         type={type}
         autoComplete={autoComplete}
-        className="h-11 w-full rounded-xl border border-line bg-surface px-4 text-sm outline-none transition-[border-color,box-shadow] focus:border-lavender/60 focus:shadow-[0_0_0_4px_rgba(169,156,240,0.15)] focus-visible:outline-none"
+        className="h-11 w-full rounded-xl border border-line bg-surface px-4 text-sm outline-none transition-[border-color,box-shadow] focus:border-lavender/60 focus:shadow-[0_0_0_0.25rem_rgba(169,156,240,0.15)] focus-visible:outline-none"
       />
     </div>
   );

@@ -22,13 +22,40 @@
 
 /* Layout: one shared side gutter + header height so everything lines up */
 :root {
-  --gutter: clamp(16px, 3.6vw, 64px);
-  --header-h: 60px;
+  --gutter: clamp(1rem, 3.6vw, 4rem);
+  --header-h: 3.75rem;
 }
 @media (min-width: 768px) {
   :root {
-    --header-h: 72px;
+    --header-h: 4.5rem;
   }
+}
+
+/* TV-sized screens: the whole UI is sized in rem, so growing the root font
+   size scales everything (text, cards, header, player controls) together and
+   the layout stays the same as on a laptop, just bigger for a 10-foot view.
+   --ui-zoom must match font-size / 16: it scales the lucide icons, whose size
+   is set in px by their `size` prop. */
+@media (min-width: 1800px) {
+  html { font-size: 18px; --ui-zoom: 1.125; }
+}
+@media (min-width: 2048px) {
+  html { font-size: 20px; --ui-zoom: 1.25; }
+}
+@media (min-width: 2400px) {
+  html { font-size: 24px; --ui-zoom: 1.5; }
+}
+@media (min-width: 2880px) {
+  html { font-size: 28px; --ui-zoom: 1.75; }
+}
+@media (min-width: 3200px) {
+  html { font-size: 32px; --ui-zoom: 2; }
+}
+@media (min-width: 3600px) {
+  html { font-size: 36px; --ui-zoom: 2.25; }
+}
+svg.lucide {
+  zoom: var(--ui-zoom, 1);
 }
 @utility px-gutter {
   padding-inline: var(--gutter);

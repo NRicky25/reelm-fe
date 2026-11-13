@@ -25,12 +25,12 @@ export function PosterCard({ title, meta, badge, corner, highlight }: PosterCard
           <Artwork
             title={title}
             variant="poster"
-            className="aspect-[2/3] rounded-lg ring-1 ring-white/5 transition-[filter,box-shadow] duration-200 group-hover:shadow-[0_12px_28px_rgba(0,0,0,0.45)] group-hover:brightness-110"
+            className="aspect-[2/3] rounded-lg ring-1 ring-white/5 transition-[filter,box-shadow] duration-200 group-hover:shadow-[0_0.75rem_1.75rem_rgba(0,0,0,0.45)] group-hover:brightness-110"
           />
         </Link>
 
         {badge && (
-          <span className="pointer-events-none absolute left-2 top-2 rounded-full bg-bg/85 px-2 py-0.5 text-[10px] font-bold backdrop-blur">
+          <span className="pointer-events-none absolute left-2 top-2 rounded-full bg-bg/85 px-2 py-0.5 text-[0.625rem] font-bold backdrop-blur">
             <span className="text-brand">{badge}</span>
           </span>
         )}
@@ -51,10 +51,10 @@ export function PosterCard({ title, meta, badge, corner, highlight }: PosterCard
       </div>
 
       <Link href={`/title/${title.slug}`} className="mt-2 block" tabIndex={-1}>
-        <p className="line-clamp-1 text-[13px] font-semibold">
+        <p className="line-clamp-1 text-[0.8125rem] font-semibold">
           <Highlighted text={title.name} query={highlight} />
         </p>
-        <p className="mt-0.5 line-clamp-1 text-[11px] text-muted">{meta ?? `${typeLabel(title)} · ${title.genres[0]}`}</p>
+        <p className="mt-0.5 line-clamp-1 text-[0.6875rem] text-muted">{meta ?? `${typeLabel(title)} · ${title.genres[0]}`}</p>
       </Link>
     </div>
   );

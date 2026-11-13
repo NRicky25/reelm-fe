@@ -28,7 +28,7 @@ export function Header({ genres }: { genres: Record<BrowseKey, string[]> }) {
       {/* Over a hero: a tall, soft fade with no hard edge (keeps the menu readable). */}
       <div
         aria-hidden
-        className={`pointer-events-none absolute inset-x-0 top-0 h-[180px] bg-[linear-gradient(180deg,rgba(28,29,33,0.85)_0%,rgba(28,29,33,0.45)_45%,rgba(28,29,33,0)_100%)] transition-opacity duration-300 ${
+        className={`pointer-events-none absolute inset-x-0 top-0 h-[11.25rem] bg-[linear-gradient(180deg,rgba(28,29,33,0.85)_0%,rgba(28,29,33,0.45)_45%,rgba(28,29,33,0)_100%)] transition-opacity duration-300 ${
           solid ? "opacity-0" : "opacity-100"
         }`}
       />
@@ -36,12 +36,12 @@ export function Header({ genres }: { genres: Record<BrowseKey, string[]> }) {
       <div
         aria-hidden
         className={`absolute inset-0 bg-bg/92 backdrop-blur-md transition-[opacity,box-shadow] duration-300 ${solid ? "opacity-100" : "opacity-0"} ${
-          scrolled ? "shadow-[0_1px_0_rgba(255,255,255,0.06),0_8px_24px_rgba(0,0,0,0.25)]" : ""
+          scrolled ? "shadow-[0_0.0625rem_0_rgba(255,255,255,0.06),0_0.5rem_1.5rem_rgba(0,0,0,0.25)]" : ""
         }`}
       />
 
       <div className="relative flex h-header items-center gap-2 px-gutter">
-        <Logo className="mr-3 text-[26px] md:mr-6 md:text-[28px]" />
+        <Logo className="mr-3 text-[1.625rem] md:mr-6 md:text-[1.75rem]" />
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
           <NavLink href="/" active={pathname === "/"}>
@@ -81,7 +81,7 @@ function NavLink({ href, active, children }: { href: string; active: boolean; ch
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`relative rounded-lg px-3.5 py-2 text-[15px] font-medium transition-colors duration-150 ${active ? "text-fg" : "text-muted hover:text-fg"}`}
+      className={`relative rounded-lg px-3.5 py-2 text-[0.9375rem] font-medium transition-colors duration-150 ${active ? "text-fg" : "text-muted hover:text-fg"}`}
     >
       {children}
       {active && <span className="bg-brand absolute inset-x-3.5 -bottom-1 h-0.5 rounded-full" />}
@@ -111,16 +111,16 @@ function NotificationsMenu() {
         <span className="absolute right-2.5 top-2.5 size-2 rounded-full bg-mauve ring-2 ring-bg" />
       </button>
       {pop.open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-line bg-elevated shadow-[0_18px_40px_rgba(0,0,0,0.55)]">
+        <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-line bg-elevated shadow-[0_1.125rem_2.5rem_rgba(0,0,0,0.55)]">
           <p className="border-b border-line px-4 py-3 text-sm font-semibold">Notifications</p>
           {NOTIFICATIONS.map((n) => (
             <Link key={n.title} href={n.href} onClick={pop.hide} className="flex gap-3 px-4 py-3 transition-colors hover:bg-surface">
               <span className="bg-brand mt-1.5 size-2 shrink-0 rounded-full" />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[13px] font-semibold">{n.title}</span>
+                <span className="block truncate text-[0.8125rem] font-semibold">{n.title}</span>
                 <span className="block text-xs text-muted">{n.text}</span>
               </span>
-              <span className="text-[11px] text-subtle">{n.when}</span>
+              <span className="text-[0.6875rem] text-subtle">{n.when}</span>
             </Link>
           ))}
         </div>
@@ -131,7 +131,7 @@ function NotificationsMenu() {
 
 export function Avatar({ name, color, size = 32 }: { name: string; color: string; size?: number }) {
   return (
-    <span className="bg-brand inline-grid shrink-0 rounded-full p-[2px]" style={{ width: size, height: size }}>
+    <span className="bg-brand inline-grid shrink-0 rounded-full p-[0.125rem]" style={{ width: `${size / 16}rem`, height: `${size / 16}rem` }}>
       <span className="grid place-items-center rounded-full text-xs font-bold text-fg" style={{ background: color }}>
         {name[0]}
       </span>
@@ -148,7 +148,7 @@ function ProfileMenu() {
         <Avatar name={profile.name} color={profile.color} size={36} />
       </button>
       {pop.open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-line bg-elevated p-1.5 shadow-[0_18px_40px_rgba(0,0,0,0.55)]">
+        <div className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-line bg-elevated p-1.5 shadow-[0_1.125rem_2.5rem_rgba(0,0,0,0.55)]">
           <div className="flex items-center gap-3 px-2.5 py-2.5">
             <Avatar name={profile.name} color={profile.color} size={36} />
             <div>
@@ -171,7 +171,7 @@ function ProfileMenu() {
 
 function MenuItem({ href, icon, onClick, children }: { href: string; icon: React.ReactNode; onClick: () => void; children: React.ReactNode }) {
   return (
-    <Link href={href} onClick={onClick} className="flex items-center gap-3 rounded-lg px-2.5 py-2 text-[13px] text-soft transition-colors hover:bg-surface hover:text-fg">
+    <Link href={href} onClick={onClick} className="flex items-center gap-3 rounded-lg px-2.5 py-2 text-[0.8125rem] text-soft transition-colors hover:bg-surface hover:text-fg">
       <span className="text-muted">{icon}</span>
       {children}
     </Link>

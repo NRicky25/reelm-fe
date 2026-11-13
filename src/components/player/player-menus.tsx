@@ -16,12 +16,12 @@ export function PlayerMenu({ sections, onClose }: { sections: MenuSection[]; onC
   return (
     <div
       role="menu"
-      className="absolute bottom-[calc(100%+12px)] right-0 max-h-[60vh] w-60 animate-[fadeIn_120ms_ease-out] overflow-y-auto rounded-xl border border-line bg-bg/95 p-2 text-sm shadow-2xl backdrop-blur-md"
+      className="absolute bottom-[calc(100%+0.75rem)] right-0 max-h-[60vh] w-60 animate-[fadeIn_120ms_ease-out] overflow-y-auto rounded-xl border border-line bg-bg/95 p-2 text-sm shadow-2xl backdrop-blur-md"
       onKeyDown={(e) => e.key === "Escape" && onClose()}
     >
       {sections.map((s) => (
         <div key={s.heading} className="mb-1 last:mb-0">
-          <p className="px-2.5 pb-1 pt-2 text-[10px] font-semibold tracking-[0.15em] text-subtle">{s.heading.toUpperCase()}</p>
+          <p className="px-2.5 pb-1 pt-2 text-[0.625rem] font-semibold tracking-[0.15em] text-subtle">{s.heading.toUpperCase()}</p>
           {s.options.map((o) => {
             const on = o.value === s.selected;
             return (

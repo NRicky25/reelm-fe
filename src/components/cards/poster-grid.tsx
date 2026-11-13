@@ -4,7 +4,7 @@
  */
 export function PosterGrid({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-x-3 gap-y-6 sm:grid-cols-[repeat(auto-fill,minmax(160px,1fr))] sm:gap-x-4">
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(8.75rem,1fr))] gap-x-3 gap-y-6 sm:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:gap-x-4">
       {children}
     </div>
   );
