@@ -30,11 +30,12 @@ export default async function WatchPage({ params, searchParams }: Props) {
       src={playable.videoUrl}
       introStart={playable.introStartSec}
       introEnd={playable.introEndSec}
+      outroStart={playable.outroStartSec}
       nextHref={next ? watchHref(slug, next.episode.id) : undefined}
       nextLabel={next && next.season !== season ? `Season ${next.season}` : "Next Episode"}
       season={title.seasons?.find((s) => s.number === season)}
       audioLanguages={title.audioLanguages}
-      subtitleLanguages={title.subtitleLanguages}
+      subtitles={playable.subtitles ?? []}
     />
   );
 }

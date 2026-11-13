@@ -2,13 +2,14 @@
 import { useRef, useState } from "react";
 import { formatTime } from "./format";
 
-/** Seek bar with buffered range, a marked intro section, and a hover time preview. */
+/** Seek bar with buffered range, marked intro and credits sections, and a hover time preview. */
 export function ProgressBar({
   current,
   duration,
   buffered,
   introStart,
   introEnd,
+  outroStart,
   onSeek,
   onScrub,
 }: {
@@ -17,6 +18,8 @@ export function ProgressBar({
   buffered: number;
   introStart?: number;
   introEnd?: number;
+  /** Where the end credits start; marked to the end. */
+  outroStart?: number;
   onSeek: (t: number) => void;
   /** Called while dragging, so controls stay visible. */
   onScrub?: (active: boolean) => void;
@@ -33,6 +36,7 @@ export function ProgressBar({
   const pct = (t: number) => (duration > 0 ? `${(t / duration) * 100}%` : "0%");
   const shown = drag ?? current;
   const hasIntro = introStart !== undefined && introEnd !== undefined && introEnd > introStart && duration > 0;
+  const hasOutro = outroStart !== undefined && outroStart > 0 && duration > 0 && outroStart < duration;
 
   return (
     <div
@@ -78,6 +82,13 @@ export function ProgressBar({
             className="absolute inset-y-0 bg-mauve/45"
             style={{ left: pct(introStart!), width: `${((introEnd! - introStart!) / duration) * 100}%` }}
             title="Intro"
+          />
+        )}
+        {hasOutro && (
+          <div
+            className="absolute inset-y-0 rounded-r-full bg-mauve/45"
+            style={{ left: pct(outroStart!), right: 0 }}
+            title="Credits"
           />
         )}
         <div className="bg-brand absolute inset-y-0 left-0 rounded-full" style={{ width: pct(shown) }} />

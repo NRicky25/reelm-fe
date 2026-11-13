@@ -80,12 +80,12 @@ export const localSource: DataSource = {
     if (!title) return undefined;
     if (title.type === "movie") {
       if (!title.videoUrl) return undefined;
-      return { title, videoUrl: title.videoUrl, durationSec: title.durationSec ?? 0, introStartSec: title.introStartSec, introEndSec: title.introEndSec };
+      return { title, videoUrl: title.videoUrl, durationSec: title.durationSec ?? 0, introStartSec: title.introStartSec, introEndSec: title.introEndSec, outroStartSec: title.outroStartSec };
     }
     for (const s of title.seasons ?? []) {
       const ep = episodeId ? s.episodes.find((e) => e.id === episodeId) : s.episodes.find(isReleased);
       if (ep && isReleased(ep))
-        return { title, episode: ep, season: s.number, videoUrl: ep.videoUrl!, durationSec: ep.durationSec, introStartSec: ep.introStartSec, introEndSec: ep.introEndSec };
+        return { title, episode: ep, season: s.number, videoUrl: ep.videoUrl!, durationSec: ep.durationSec, introStartSec: ep.introStartSec, introEndSec: ep.introEndSec, outroStartSec: ep.outroStartSec };
     }
     return undefined;
   },

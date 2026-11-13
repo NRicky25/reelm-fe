@@ -15,6 +15,8 @@ export interface Episode {
   thumbUrl?: string;
   introStartSec?: number;
   introEndSec?: number;
+  /** Where the end credits start (seconds); they run to the end. */
+  outroStartSec?: number;
   /** Missing when the episode has no playable video yet. */
   videoUrl?: string;
 }
@@ -55,10 +57,19 @@ export interface Title {
   videoUrl?: string;
   introStartSec?: number;
   introEndSec?: number;
+  /** Where the end credits start (seconds); they run to the end. */
+  outroStartSec?: number;
   /** Anime & series only */
   seasons?: Season[];
   /** Newest playable episode. List endpoints send this instead of `seasons`. */
   latestEpisode?: { season: number; id: string; number: number; releaseDate: string };
+}
+
+/** A subtitle file (WebVTT) for a video. */
+export interface SubtitleTrack {
+  /** Language code, e.g. "en". */
+  lang: string;
+  url: string;
 }
 
 /** A single playable thing: a movie, or one episode of a show. */
@@ -67,7 +78,11 @@ export interface Playable {
   episode?: Episode;
   season?: number;
   videoUrl: string;
+  /** Subtitle files for this video (empty when there are none). */
+  subtitles?: SubtitleTrack[];
   durationSec: number;
   introStartSec?: number;
   introEndSec?: number;
+  /** Where the end credits start (seconds); they run to the end. */
+  outroStartSec?: number;
 }

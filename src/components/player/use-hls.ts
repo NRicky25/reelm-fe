@@ -1,10 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import type Hls from "hls.js";
+import { qualityLabel } from "./quality-label";
 
 export interface QualityLevel {
   index: number;
-  height: number;
+  /** e.g. "1080p" (also for wide 1920x800 cinema encodes) */
+  label: string;
+  pixels: number;
 }
 
 /**
@@ -52,9 +55,13 @@ export function useHls(video: HTMLVideoElement | null, src: string, startAt: num
         instance.on(HlsCtor.Events.MANIFEST_PARSED, (_e, data) => {
           setLevels(
             data.levels
-              .map((l, index) => ({ index, height: l.height }))
               .filter((l) => l.height > 0)
-              .sort((a, b) => b.height - a.height),
+              .map((l) => ({
+                index: data.levels.indexOf(l),
+                label: qualityLabel(l.width, l.height),
+                pixels: (l.width || l.height) * l.height,
+              }))
+              .sort((a, b) => b.pixels - a.pixels),
           );
         });
         instance.on(HlsCtor.Events.ERROR, (_e, data) => {

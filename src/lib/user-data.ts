@@ -99,9 +99,13 @@ export function useProfile() {
 }
 
 // ───────── Player preferences ─────────
+export type SubtitleBackground = "black" | "white" | "none";
+
 export interface PlayerPrefs {
   audio: string;
   subtitles: string; // "Off" or a language
+  /** Box behind subtitles; hides subtitles burned into the video. Missing in older saved prefs = "black". */
+  subtitleBackground?: SubtitleBackground;
   quality: number; // -1 = Auto, otherwise HLS level index
   speed: number;
   volume: number;
@@ -110,6 +114,7 @@ export interface PlayerPrefs {
 const prefsStore = createLocalStore<PlayerPrefs>("reelm:player", () => ({
   audio: "Japanese",
   subtitles: "English",
+  subtitleBackground: "black",
   quality: -1,
   speed: 1,
   volume: 1,

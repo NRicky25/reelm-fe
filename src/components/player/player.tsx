@@ -19,12 +19,14 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import type { Season } from "@/data/types";
-import { getSavedProgress, isFinished, saveProgress, setPlayerPrefs, usePlayerPrefs } from "@/lib/user-data";
+import type { Season, SubtitleTrack } from "@/data/types";
+import { getSavedProgress, isFinished, saveProgress, setPlayerPrefs, type SubtitleBackground, usePlayerPrefs } from "@/lib/user-data";
 import { ProgressBar } from "./progress-bar";
 import { EpisodesPanel, PlayerMenu, type MenuSection } from "./player-menus";
 import { formatTime } from "./format";
 import { useHls } from "./use-hls";
+import { languageName, useSubtitleLines } from "./subtitles";
+import { useSubtitleLayout } from "./subtitle-layout";
 
 export interface PlayerProps {
   slug: string;
@@ -35,29 +37,53 @@ export interface PlayerProps {
   src: string;
   introStart?: number;
   introEnd?: number;
+  /** Where the end credits start (seconds); they run to the end. */
+  outroStart?: number;
   nextHref?: string;
   nextLabel?: string;
   season?: Season;
   audioLanguages: string[];
-  subtitleLanguages: string[];
+  /** This video's subtitle files (WebVTT). */
+  subtitles: SubtitleTrack[];
 }
 
 const HIDE_AFTER_MS = 3000;
 const SKIP = 10;
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
+/** Each subtitle line's backing pill (same size and padding for every style). */
+const PILL: Record<SubtitleBackground, string> = {
+  black: "bg-black",
+  white: "bg-white",
+  none: "bg-black/35",
+};
 
 export function Player(props: PlayerProps) {
-  const { slug, episodeId, src, introStart, introEnd } = props;
+  const { slug, episodeId, src, introStart, introEnd, outroStart, nextHref } = props;
   const router = useRouter();
   const root = useRef<HTMLDivElement>(null);
   const [video, setVideo] = useState<HTMLVideoElement | null>(null);
   const prefs = usePlayerPrefs();
 
+  // The end credits start here and run to the end (0, missing, or past the end: none).
+  const creditsFrom = useCallback(
+    (length: number) => (outroStart !== undefined && outroStart > 0 && length > 0 && outroStart < length ? outroStart : null),
+    [outroStart],
+  );
+
   const [startAt] = useState(() => {
     const saved = getSavedProgress(episodeId ?? slug);
-    return saved && !isFinished(saved) ? saved.position : 0;
+    if (!saved || isFinished(saved)) return 0;
+    const credits = creditsFrom(saved.duration);
+    return credits !== null && saved.position >= credits ? 0 : saved.position; // stopped in the credits: watched
   });
   const { levels, setQuality, error } = useHls(video, src, startAt);
+
+  // ── subtitles: the saved choice is a language name ("English"), or "Off" ──
+  const subtitleLangs = props.subtitles.map((t) => ({ lang: t.lang, name: languageName(t.lang) }));
+  const subtitleLang = subtitleLangs.find((s) => s.name === prefs.subtitles)?.lang ?? null;
+  const subtitleLines = useSubtitleLines(video, props.subtitles, subtitleLang);
+  const subtitleBox = useRef<HTMLParagraphElement>(null);
+  const controlBar = useRef<HTMLDivElement>(null);
 
   const [playing, setPlaying] = useState(false);
   const [waiting, setWaiting] = useState(true);
@@ -79,6 +105,8 @@ export function Player(props: PlayerProps) {
   }, []);
   const keepVisible = !playing || menu !== null || scrubbing;
   const showControls = controlsVisible || keepVisible;
+  const subtitleLayout = useSubtitleLayout(root, video, subtitleBox, controlBar, showControls, subtitleLines);
+  const subtitleBackground = prefs.subtitleBackground ?? "black";
 
   useEffect(() => () => {
     if (hideTimer.current) clearTimeout(hideTimer.current);
@@ -100,7 +128,10 @@ export function Player(props: PlayerProps) {
       return () => video.removeEventListener(ev, fn);
     };
     const offs = [
-      on("play", () => setPlaying(true)),
+      on("play", () => {
+        setPlaying(true);
+        poke(); // start the hide timer even if the mouse never moves
+      }),
       on("pause", () => setPlaying(false)),
       on("waiting", () => setWaiting(true)),
       on("playing", () => setWaiting(false)),
@@ -115,14 +146,16 @@ export function Player(props: PlayerProps) {
     ];
     video.play().catch(() => setPlaying(false)); // autoplay may be blocked; user taps play
     return () => offs.forEach((off) => off());
-  }, [video]);
+  }, [video, poke]);
 
   // ── save progress every 5s and when leaving ──
   useEffect(() => {
     if (!video) return;
     const save = () => {
-      if (video.duration > 0 && video.currentTime > 0)
-        saveProgress({ slug, episodeId, position: video.currentTime, duration: video.duration });
+      if (!(video.duration > 0 && video.currentTime > 0)) return;
+      const credits = creditsFrom(video.duration);
+      const inCredits = credits !== null && video.currentTime >= credits;
+      saveProgress({ slug, episodeId, position: inCredits ? video.duration : video.currentTime, duration: video.duration });
     };
     const id = setInterval(() => !video.paused && save(), 5000);
     video.addEventListener("pause", save);
@@ -133,7 +166,7 @@ export function Player(props: PlayerProps) {
       video.removeEventListener("pause", save);
       window.removeEventListener("pagehide", save);
     };
-  }, [video, slug, episodeId]);
+  }, [video, slug, episodeId, creditsFrom]);
 
   // ── fullscreen ──
   useEffect(() => {
@@ -170,6 +203,13 @@ export function Player(props: PlayerProps) {
 
   const inIntro = introStart !== undefined && introEnd !== undefined && introEnd > introStart && current >= introStart && current < introEnd - 1;
   const skipIntro = useCallback(() => introEnd && seek(introEnd), [introEnd, seek]);
+  // credits: on to the next episode, or (last episode / movie) back to the title page;
+  // leaving saves the episode as watched (see save above)
+  const creditsAt = creditsFrom(duration);
+  const inOutro = creditsAt !== null && current >= creditsAt && current < duration - 1;
+  const skipOutro = useCallback(() => {
+    router.replace(nextHref ?? `/title/${slug}`);
+  }, [nextHref, router, slug]);
 
   // ── keyboard shortcuts ──
   useEffect(() => {
@@ -204,6 +244,7 @@ export function Player(props: PlayerProps) {
           break;
         case "s":
           if (inIntro) skipIntro();
+          else if (inOutro) skipOutro();
           break;
         case "escape":
           if (menu) setMenu(null);
@@ -260,15 +301,29 @@ export function Player(props: PlayerProps) {
     },
     {
       heading: "Subtitles",
-      options: [{ label: "Off", value: "Off" }, ...props.subtitleLanguages.map((l) => ({ label: l, value: l }))],
-      selected: prefs.subtitles,
+      options: [{ label: "Off", value: "Off" }, ...subtitleLangs.map((s) => ({ label: s.name, value: s.name }))],
+      selected: subtitleLang ? prefs.subtitles : "Off",
       onSelect: (v) => setPlayerPrefs({ subtitles: String(v) }),
     },
+    ...(subtitleLangs.length
+      ? [
+          {
+            heading: "Subtitle background",
+            options: [
+              { label: "Black", value: "black" },
+              { label: "White", value: "white" },
+              { label: "None", value: "none" },
+            ],
+            selected: subtitleBackground,
+            onSelect: (v: string | number) => setPlayerPrefs({ subtitleBackground: v as SubtitleBackground }),
+          },
+        ]
+      : []),
   ];
   const settingsSections: MenuSection[] = [
     {
       heading: "Quality",
-      options: [{ label: "Auto", value: -1 }, ...levels.map((l) => ({ label: `${l.height}p`, value: l.index }))],
+      options: [{ label: "Auto", value: -1 }, ...levels.map((l) => ({ label: l.label, value: l.index }))],
       selected: levels.some((l) => l.index === prefs.quality) ? prefs.quality : -1,
       onSelect: (v) => {
         setQuality(Number(v));
@@ -292,7 +347,38 @@ export function Player(props: PlayerProps) {
       className={`fixed inset-0 z-50 select-none bg-black ${showControls ? "" : "cursor-none"}`}
       onPointerMove={(e) => e.pointerType === "mouse" && poke()}
     >
-      <video ref={setVideo} className="absolute inset-0 size-full object-contain" playsInline preload="auto" />
+      {/* crossOrigin: subtitle files come from the video host and must be readable */}
+      <video ref={setVideo} className="absolute inset-0 size-full object-contain" playsInline preload="auto" crossOrigin="anonymous">
+        {props.subtitles.map((t) => (
+          <track key={t.url} kind="subtitles" src={t.url} srcLang={t.lang} label={languageName(t.lang)} />
+        ))}
+      </video>
+
+      {/* subtitles, drawn by us: just under the picture when there's a black bar
+          (so they never cover text burned into the video), and clear of the controls.
+          Every style puts each line on its own pill, as wide as its text. */}
+      {subtitleLines.length > 0 && (
+        <div
+          aria-live="polite"
+          style={{ top: subtitleLayout.top, bottom: subtitleLayout.bottom, fontSize: subtitleLayout.fontPx }}
+          className="pointer-events-none absolute inset-x-0 flex justify-center px-6"
+        >
+          {/* each line is its own box (inline-block), with a gap between: an inline
+              background is taller than the line spacing and would overlap the next line */}
+          <p
+            ref={subtitleBox}
+            className={`flex max-w-[min(92%,1100px)] flex-col items-center gap-1 text-center font-semibold leading-snug ${
+              subtitleBackground === "white" ? "text-black" : "text-white"
+            } ${subtitleBackground === "none" ? "[text-shadow:0_0_6px_rgba(0,0,0,.95),0_2px_3px_rgba(0,0,0,.9)]" : ""}`}
+          >
+            {subtitleLines.map((line, i) => (
+              <span key={i} className={`inline-block max-w-full rounded-md px-2 py-0.5 ${PILL[subtitleBackground]}`}>
+                {line}
+              </span>
+            ))}
+          </p>
+        </div>
+      )}
 
       {/* click / tap surface */}
       <div className="absolute inset-0" onPointerUp={onSurfacePointer} />
@@ -343,6 +429,19 @@ export function Player(props: PlayerProps) {
         </button>
       )}
 
+      {/* Credits: next episode (or past the credits on the last one / a movie) */}
+      {inOutro && !inIntro && (
+        <button
+          type="button"
+          onClick={skipOutro}
+          className={`absolute right-4 z-20 flex items-center gap-2 rounded-full border border-white/20 bg-bg/75 px-5 py-2.5 text-sm font-bold backdrop-blur-md transition-[bottom,background-color] duration-300 hover:bg-surface sm:right-7 ${
+            showControls ? "bottom-32" : "bottom-10"
+          }`}
+        >
+          {nextHref ? (props.nextLabel ?? "Next Episode") : "Skip Credits"} <SkipForward size={16} />
+        </button>
+      )}
+
       {/* ── controls ── */}
       <div className={`transition-opacity duration-300 ${showControls ? "opacity-100" : "pointer-events-none opacity-0"}`}>
         {/* top bar */}
@@ -378,13 +477,17 @@ export function Player(props: PlayerProps) {
         </div>
 
         {/* bottom bar */}
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pb-[max(12px,env(safe-area-inset-bottom))] pt-14 sm:px-6 sm:pb-5">
+        <div
+          ref={controlBar}
+          className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pb-[max(12px,env(safe-area-inset-bottom))] pt-14 sm:px-6 sm:pb-5"
+        >
           <ProgressBar
             current={current}
             duration={duration}
             buffered={buffered}
             introStart={introStart}
             introEnd={introEnd}
+            outroStart={creditsAt ?? undefined}
             onSeek={seek}
             onScrub={setScrubbing}
           />

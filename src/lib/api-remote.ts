@@ -1,5 +1,5 @@
 // REMOTE data source: calls reelm-be (NEXT_PUBLIC_API_URL).
-import type { Episode, Playable, Title } from "@/data/types";
+import type { Episode, Playable, SubtitleTrack, Title } from "@/data/types";
 import type { DataSource } from "./api-types";
 import { BROWSE_TYPES, genreSlug, listHeading } from "./catalog-utils";
 
@@ -69,7 +69,7 @@ export function createRemoteSource(baseUrl: string): DataSource {
     },
 
     getPlayable: async (slug, episodeId) => {
-      const p = await get<{ title: Title; episode?: Episode; season?: number; videoUrl: string; durationSec: number; introStartSec?: number; introEndSec?: number }>(
+      const p = await get<{ title: Title; episode?: Episode; season?: number; videoUrl: string; subtitles?: SubtitleTrack[]; durationSec: number; introStartSec?: number; introEndSec?: number; outroStartSec?: number }>(
         `/playback/${encodeURIComponent(slug)}`,
         { ep: episodeId },
         { allow404: true },
@@ -80,9 +80,11 @@ export function createRemoteSource(baseUrl: string): DataSource {
         episode: p.episode,
         season: p.season,
         videoUrl: p.videoUrl,
+        subtitles: p.subtitles ?? [],
         durationSec: p.durationSec,
         introStartSec: p.introStartSec,
         introEndSec: p.introEndSec,
+        outroStartSec: p.outroStartSec,
       };
       return playable;
     },
