@@ -1,4 +1,4 @@
-import type { Playable, Title, TitleType } from "@/data/types";
+import type { EpisodeRef, Playable, Title, TitleType } from "@/data/types";
 import type { BrowseKey } from "./catalog-utils";
 
 /** Everything the pages need from a catalogue source (local fake data or reelm-be). */
@@ -15,5 +15,6 @@ export interface DataSource {
   getGenres(type: TitleType): Promise<string[]>;
   browse(key: BrowseKey, opts: { genre?: string; list?: string }): Promise<{ heading: string; titles: Title[] }>;
   search(query: string, signal?: AbortSignal): Promise<Title[]>;
-  getPlayable(slug: string, episodeId?: string): Promise<Playable | undefined>;
+  /** An episode by id (old ?ep= links) or by season + number; none = movie / first episode. */
+  getPlayable(slug: string, episode?: string | EpisodeRef): Promise<Playable | undefined>;
 }

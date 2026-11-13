@@ -1,5 +1,5 @@
 // Pure helpers shared by pages, components and both data sources.
-import type { Episode, Title, TitleType } from "@/data/types";
+import type { Episode, EpisodeRef, Title, TitleType } from "@/data/types";
 
 /**
  * "Today" (UTC, YYYY-MM-DD) for release-date logic. NEXT_PUBLIC_CATALOG_TODAY pins it
@@ -80,8 +80,17 @@ export function listHeading(key: BrowseKey, list?: string): string | undefined {
 }
 
 // ───────── Formatting & links ─────────
-export function watchHref(slug: string, episodeId?: string) {
-  return episodeId ? `/watch/${slug}?ep=${episodeId}` : `/watch/${slug}`;
+/** Readable watch links: /watch/<slug> (movie / first episode) or /watch/<slug>/s4/e166. */
+export function watchHref(slug: string, ep?: EpisodeRef) {
+  return ep ? `/watch/${slug}/s${ep.season}/e${ep.number}` : `/watch/${slug}`;
+}
+
+/** Reads the ["s4", "e166"] part of a watch link; undefined if it isn't one. */
+export function parseEpisodeRef(parts: string[]): EpisodeRef | undefined {
+  const s = /^s(\d{1,4})$/.exec(parts[0] ?? "");
+  const e = /^e(\d{1,5})$/.exec(parts[1] ?? "");
+  if (parts.length !== 2 || !s || !e) return undefined;
+  return { season: Number(s[1]), number: Number(e[1]) };
 }
 
 export function typeLabel(t: Title) {

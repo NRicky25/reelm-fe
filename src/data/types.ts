@@ -72,6 +72,12 @@ export interface SubtitleTrack {
   url: string;
 }
 
+/** Points at one episode by season + episode number (what watch links use). */
+export interface EpisodeRef {
+  season: number;
+  number: number;
+}
+
 /** A single playable thing: a movie, or one episode of a show. */
 export interface Playable {
   title: Title;

@@ -68,10 +68,10 @@ export function createRemoteSource(baseUrl: string): DataSource {
       return (await res.json()) as Title[];
     },
 
-    getPlayable: async (slug, episodeId) => {
+    getPlayable: async (slug, episode) => {
       const p = await get<{ title: Title; episode?: Episode; season?: number; videoUrl: string; subtitles?: SubtitleTrack[]; durationSec: number; introStartSec?: number; introEndSec?: number; outroStartSec?: number }>(
         `/playback/${encodeURIComponent(slug)}`,
-        { ep: episodeId },
+        typeof episode === "string" ? { ep: episode } : episode ? { s: episode.season, e: episode.number } : {},
         { allow404: true },
       );
       if (!p) return undefined;

@@ -116,7 +116,7 @@ function Episodes({ title }: { title: Title }) {
           return (
             <Link
               key={ep.id}
-              href={watchHref(title.slug, ep.id)}
+              href={watchHref(title.slug, { season: season.number, number: ep.number })}
               className={`group block rounded-lg ${isCurrent ? "outline-2 outline-offset-4 outline-lavender" : ""}`}
             >
               <div className="relative overflow-hidden rounded-lg ring-1 ring-white/5">

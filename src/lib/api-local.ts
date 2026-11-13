@@ -75,7 +75,7 @@ export const localSource: DataSource = {
     });
   },
 
-  getPlayable: async (slug, episodeId): Promise<Playable | undefined> => {
+  getPlayable: async (slug, episode): Promise<Playable | undefined> => {
     const title = TITLES.find((t) => t.slug === slug);
     if (!title) return undefined;
     if (title.type === "movie") {
@@ -83,7 +83,14 @@ export const localSource: DataSource = {
       return { title, videoUrl: title.videoUrl, durationSec: title.durationSec ?? 0, introStartSec: title.introStartSec, introEndSec: title.introEndSec, outroStartSec: title.outroStartSec };
     }
     for (const s of title.seasons ?? []) {
-      const ep = episodeId ? s.episodes.find((e) => e.id === episodeId) : s.episodes.find(isReleased);
+      const ep =
+        typeof episode === "string"
+          ? s.episodes.find((e) => e.id === episode)
+          : episode
+            ? s.number === episode.season
+              ? s.episodes.find((e) => e.number === episode.number)
+              : undefined
+            : s.episodes.find(isReleased);
       if (ep && isReleased(ep))
         return { title, episode: ep, season: s.number, videoUrl: ep.videoUrl!, durationSec: ep.durationSec, introStartSec: ep.introStartSec, introEndSec: ep.introEndSec, outroStartSec: ep.outroStartSec };
     }

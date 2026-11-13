@@ -44,7 +44,7 @@ export function PrimaryAction({ title }: { title: Title }) {
       }
     }
     if (target) {
-      href = watchHref(title.slug, target.e.id);
+      href = watchHref(title.slug, { season: target.s, number: target.e.number });
       label = `${ratio > 0 ? "Continue" : "Play"} S${target.s} · E${target.e.number}`;
     }
   }

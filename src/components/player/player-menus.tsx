@@ -83,7 +83,7 @@ export function EpisodesPanel({
             <li key={ep.id}>
               {released ? (
                 <Link
-                  href={watchHref(slug, ep.id)}
+                  href={watchHref(slug, { season: season.number, number: ep.number })}
                   replace
                   className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-surface ${current ? "bg-surface/70" : ""}`}
                 >
