@@ -28,6 +28,11 @@ import { useHls } from "./use-hls";
 import { languageName, useSubtitleLines } from "./subtitles";
 import { useSubtitleLayout } from "./subtitle-layout";
 
+/** Safari on iPhone: the <video>'s own fullscreen (the only kind it allows). */
+type WebkitVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
+/** lock()/unlock() exist on phones but aren't in every TS lib version. */
+type LockableOrientation = ScreenOrientation & { lock?: (o: string) => Promise<void>; unlock?: () => void };
+
 export interface PlayerProps {
   slug: string;
   titleName: string;
@@ -170,10 +175,42 @@ export function Player(props: PlayerProps) {
 
   // ── fullscreen ──
   useEffect(() => {
-    const onFs = () => setFullscreen(!!document.fullscreenElement);
+    const onFs = () => {
+      setFullscreen(!!document.fullscreenElement);
+      // phones: turn back to normal after landscape fullscreen
+      if (!document.fullscreenElement) (screen.orientation as LockableOrientation | undefined)?.unlock?.();
+    };
     document.addEventListener("fullscreenchange", onFs);
     return () => document.removeEventListener("fullscreenchange", onFs);
   }, []);
+
+  // iPhone: no element fullscreen, only the video's own (native player). Our
+  // subtitle overlay isn't shown there, so let the native player draw the chosen
+  // track while fullscreen, and hand it back to the overlay afterwards.
+  useEffect(() => {
+    if (!video) return;
+    const setShowing = (on: boolean) => {
+      for (let i = 0; i < video.textTracks.length; i++) {
+        const t = video.textTracks[i];
+        const chosen = subtitleLang !== null && t.language === subtitleLang;
+        t.mode = chosen ? (on ? "showing" : "hidden") : "disabled";
+      }
+    };
+    const onBegin = () => {
+      setShowing(true);
+      setFullscreen(true);
+    };
+    const onEnd = () => {
+      setShowing(false);
+      setFullscreen(false);
+    };
+    video.addEventListener("webkitbeginfullscreen", onBegin);
+    video.addEventListener("webkitendfullscreen", onEnd);
+    return () => {
+      video.removeEventListener("webkitbeginfullscreen", onBegin);
+      video.removeEventListener("webkitendfullscreen", onEnd);
+    };
+  }, [video, subtitleLang]);
 
   const togglePlay = useCallback(() => {
     if (!video) return;
@@ -195,9 +232,21 @@ export function Player(props: PlayerProps) {
     [video, seek],
   );
   const toggleFullscreen = useCallback(() => {
-    if (document.fullscreenElement) document.exitFullscreen();
-    else root.current?.requestFullscreen?.().catch(() => {});
-  }, []);
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+      return;
+    }
+    const el = root.current;
+    if (el?.requestFullscreen) {
+      el.requestFullscreen()
+        // phones (Android): watch in landscape; desktops just ignore/refuse this
+        .then(() => (screen.orientation as LockableOrientation | undefined)?.lock?.("landscape"))
+        .catch(() => {});
+      return;
+    }
+    // iPhone: only the <video> itself can go fullscreen
+    (video as WebkitVideo | null)?.webkitEnterFullscreen?.();
+  }, [video]);
   const setVolume = (v: number) => setPlayerPrefs({ volume: Math.min(1, Math.max(0, v)), muted: v <= 0 });
   const toggleMute = () => setPlayerPrefs({ muted: !prefs.muted, volume: prefs.muted && prefs.volume === 0 ? 0.6 : prefs.volume });
 
